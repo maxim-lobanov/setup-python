@@ -1,0 +1,20 @@
+name: Validate 'setup-python'
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  test:
+    name: Test
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: setup-python
+      uses: ./
+      with:
+        version: 3.8.2
+
+    - name: Validate version
+      run: python --version

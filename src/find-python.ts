@@ -92,12 +92,17 @@ async function useCpythonVersion(
   const semanticVersionSpec = pythonVersionToSemantic(desugaredVersionSpec);
   core.debug(`Semantic version spec of ${version} is ${semanticVersionSpec}`);
 
+  console.log(`semanticVersionSpec ${semanticVersionSpec}`)
+
   const installDir: string | null = tc.find(
     'Python',
     semanticVersionSpec,
     architecture
   );
   if (!installDir) {
+
+
+  // }
     // Fail and list available versions
     const x86Versions = tc
       .findAllVersions('Python', 'x86')
