@@ -92,7 +92,7 @@ async function useCpythonVersion(
   const semanticVersionSpec = pythonVersionToSemantic(desugaredVersionSpec);
   core.debug(`Semantic version spec of ${version} is ${semanticVersionSpec}`);
 
-  console.log(`semanticVersionSpec ${semanticVersionSpec}`)
+  core.info(`semanticVersionSpec ${semanticVersionSpec}`);
 
   const installDir: string | null = tc.find(
     'Python',
