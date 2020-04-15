@@ -4,6 +4,7 @@ import * as path from 'path';
 
 async function run() {
   try {
+    console.log(`Hello world`)
     let version = core.getInput('python-version');
     if (version) {
       const arch: string = core.getInput('architecture', {required: true});
