@@ -3,6 +3,8 @@ import * as path from 'path';
 
 import * as semver from 'semver';
 
+import * as toolcache from './tool-cache'
+
 let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
 
 if (!cacheDirectory) {
@@ -101,27 +103,35 @@ async function useCpythonVersion(
     architecture
   );
   if (!installDir) {
-
+    core.info(`Can't find installed CPython ${version}; try to download from releases`);
+    const manifestUrl = "https://raw.githubusercontent.com/akv-platform/toolcache-python-generation/master/versions-manifest.json"
+    const manifest: any = await toolcache.getManifestFromUrl(manifestUrl)
+    for (const candidate of manifest) {
+      const versionFromManifest = candidate.version
+      const releaseUrlFromManifest = candidate.release_url
+      core.info(`versionFromManifest ${versionFromManifest}`);
+      core.info(`releaseUrlFromManifest ${releaseUrlFromManifest}`);
+    }
 
   // }
     // Fail and list available versions
-    const x86Versions = tc
-      .findAllVersions('Python', 'x86')
-      .map(s => `${s} (x86)`)
-      .join(os.EOL);
+    // const x86Versions = tc
+    //   .findAllVersions('Python', 'x86')
+    //   .map(s => `${s} (x86)`)
+    //   .join(os.EOL);
 
-    const x64Versions = tc
-      .findAllVersions('Python', 'x64')
-      .map(s => `${s} (x64)`)
-      .join(os.EOL);
+    // const x64Versions = tc
+    //   .findAllVersions('Python', 'x64')
+    //   .map(s => `${s} (x64)`)
+    //   .join(os.EOL);
 
     throw new Error(
-      [
-        `Version ${version} with arch ${architecture} not found`,
-        'Available versions:',
-        x86Versions,
-        x64Versions
-      ].join(os.EOL)
+      // [
+      //   `Version ${version} with arch ${architecture} not found`,
+      //   'Available versions:',
+      //   x86Versions,
+      //   x64Versions
+      // ].join(os.EOL)
     );
   }
 
