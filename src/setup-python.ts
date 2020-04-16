@@ -5,7 +5,6 @@ import * as path from 'path';
 async function run() {
   try {
     let version = core.getInput('python-version');
-    core.info("Hello world");
     if (version) {
       const arch: string = core.getInput('architecture', {required: true});
       const installed = await finder.findPythonVersion(version, arch);

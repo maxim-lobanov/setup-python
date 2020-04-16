@@ -13,6 +13,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: setup-python '2.x'
+      uses: ./
+      with:
+        python-version: '2.x'
+
+    - name: Validate version
+      run: python --version
+
     - name: setup-python 3.8.2
       uses: ./
       with:

@@ -102,16 +102,18 @@ async function useCpythonVersion(
     semanticVersionSpec,
     architecture
   );
-  if (!installDir) {
-    core.info(`Can't find installed CPython ${version}; try to download from releases`);
-    const manifestUrl = "https://raw.githubusercontent.com/akv-platform/toolcache-python-generation/master/versions-manifest.json"
-    const manifest: any = await toolcache.getManifestFromUrl(manifestUrl)
-    for (const candidate of manifest) {
-      const versionFromManifest = candidate.version
-      const releaseUrlFromManifest = candidate.release_url
-      core.info(`versionFromManifest ${versionFromManifest}`);
-      core.info(`releaseUrlFromManifest ${releaseUrlFromManifest}`);
-    }
+  // if (!installDir) {
+  core.info(`Can't find installed CPython ${semanticVersionSpec}; try to find in releases`);
+  
+  const manifestUrl = "https://raw.githubusercontent.com/akv-platform/toolcache-python-generation/master/versions-manifest.json"
+  const manifest: toolcache.IToolRelease[] = await toolcache.getManifestFromUrl(manifestUrl)
+  const release: toolcache.IToolRelease | undefined = await toolcache.findFromManifest(
+    semanticVersionSpec,
+    true,
+    manifest
+  );
+
+  core.info(`URL finded release ${release?.release_url}`);
 
   // }
     // Fail and list available versions
@@ -124,7 +126,7 @@ async function useCpythonVersion(
     //   .findAllVersions('Python', 'x64')
     //   .map(s => `${s} (x64)`)
     //   .join(os.EOL);
-
+  if (!installDir) {
     throw new Error(
       // [
       //   `Version ${version} with arch ${architecture} not found`,
