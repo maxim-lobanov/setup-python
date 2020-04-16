@@ -2174,6 +2174,7 @@ function useCpythonVersion(version, architecture) {
         const desugaredVersionSpec = desugarDevVersion(version);
         const semanticVersionSpec = pythonVersionToSemantic(desugaredVersionSpec);
         core.debug(`Semantic version spec of ${version} is ${semanticVersionSpec}`);
+        core.info(`version ${version}`);
         core.info(`semanticVersionSpec ${semanticVersionSpec}`);
         const installDir = tc.find('Python', semanticVersionSpec, architecture);
         if (!installDir) {

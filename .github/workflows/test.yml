@@ -16,7 +16,7 @@ jobs:
     - name: setup-python
       uses: ./
       with:
-        version: 3.8.2
+        python-version: 3.8.2
 
     - name: Validate version
       run: python --version
