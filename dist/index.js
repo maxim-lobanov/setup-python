@@ -34,7 +34,7 @@ module.exports =
 /******/ 	// the startup function
 /******/ 	function startup() {
 /******/ 		// Load entry module and return exports
-/******/ 		return __webpack_require__(338);
+/******/ 		return __webpack_require__(301);
 /******/ 	};
 /******/
 /******/ 	// run startup
@@ -75,7 +75,7 @@ module.exports = {
   lt: __webpack_require__(717),
   eq: __webpack_require__(330),
   neq: __webpack_require__(727),
-  gte: __webpack_require__(910),
+  gte: __webpack_require__(688),
   lte: __webpack_require__(108),
   cmp: __webpack_require__(552),
   coerce: __webpack_require__(167),
@@ -1110,91 +1110,6 @@ module.exports = require("https");
 
 /***/ }),
 
-/***/ 216:
-/***/ (function(__unusedmodule, exports, __webpack_require__) {
-
-"use strict";
-
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
-    result["default"] = mod;
-    return result;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const os = __importStar(__webpack_require__(87));
-/**
- * Commands
- *
- * Command Format:
- *   ::name key=value,key=value::message
- *
- * Examples:
- *   ::warning::This is the message
- *   ::set-env name=MY_VAR::some value
- */
-function issueCommand(command, properties, message) {
-    const cmd = new Command(command, properties, message);
-    process.stdout.write(cmd.toString() + os.EOL);
-}
-exports.issueCommand = issueCommand;
-function issue(name, message = '') {
-    issueCommand(name, {}, message);
-}
-exports.issue = issue;
-const CMD_STRING = '::';
-class Command {
-    constructor(command, properties, message) {
-        if (!command) {
-            command = 'missing.command';
-        }
-        this.command = command;
-        this.properties = properties;
-        this.message = message;
-    }
-    toString() {
-        let cmdStr = CMD_STRING + this.command;
-        if (this.properties && Object.keys(this.properties).length > 0) {
-            cmdStr += ' ';
-            let first = true;
-            for (const key in this.properties) {
-                if (this.properties.hasOwnProperty(key)) {
-                    const val = this.properties[key];
-                    if (val) {
-                        if (first) {
-                            first = false;
-                        }
-                        else {
-                            cmdStr += ',';
-                        }
-                        cmdStr += `${key}=${escapeProperty(val)}`;
-                    }
-                }
-            }
-        }
-        cmdStr += `${CMD_STRING}${escapeData(this.message)}`;
-        return cmdStr;
-    }
-}
-function escapeData(s) {
-    return (s || '')
-        .replace(/%/g, '%25')
-        .replace(/\r/g, '%0D')
-        .replace(/\n/g, '%0A');
-}
-function escapeProperty(s) {
-    return (s || '')
-        .replace(/%/g, '%25')
-        .replace(/\r/g, '%0D')
-        .replace(/\n/g, '%0A')
-        .replace(/:/g, '%3A')
-        .replace(/,/g, '%2C');
-}
-//# sourceMappingURL=command.js.map
-
-/***/ }),
-
 /***/ 219:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -1590,6 +1505,54 @@ module.exports = compareLoose
 const SemVer = __webpack_require__(193)
 const major = (a, loose) => new SemVer(a, loose).major
 module.exports = major
+
+
+/***/ }),
+
+/***/ 301:
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const core = __importStar(__webpack_require__(915));
+const finder = __importStar(__webpack_require__(338));
+const path = __importStar(__webpack_require__(622));
+function run() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            let version = core.getInput('python-version');
+            core.info("Hello world");
+            if (version) {
+                const arch = core.getInput('architecture', { required: true });
+                const installed = yield finder.findPythonVersion(version, arch);
+                core.info(`Successfully setup ${installed.impl} (${installed.version})`);
+            }
+            const matchersPath = path.join(__dirname, '..', '.github');
+            core.info(`##[add-matcher]${path.join(matchersPath, 'python.json')}`);
+        }
+        catch (err) {
+            core.setFailed(err.message);
+        }
+    });
+}
+run();
 
 
 /***/ }),
@@ -2617,7 +2580,7 @@ module.exports = minSatisfying
 const eq = __webpack_require__(330)
 const neq = __webpack_require__(727)
 const gt = __webpack_require__(651)
-const gte = __webpack_require__(910)
+const gte = __webpack_require__(688)
 const lt = __webpack_require__(717)
 const lte = __webpack_require__(108)
 
@@ -2964,6 +2927,16 @@ module.exports = gt
 /***/ (function(module) {
 
 module.exports = require("util");
+
+/***/ }),
+
+/***/ 688:
+/***/ (function(module, __unusedexports, __webpack_require__) {
+
+const compare = __webpack_require__(158)
+const gte = (a, b, loose) => compare(a, b, loose) >= 0
+module.exports = gte
+
 
 /***/ }),
 
@@ -3823,7 +3796,7 @@ const satisfies = __webpack_require__(612)
 const gt = __webpack_require__(651)
 const lt = __webpack_require__(717)
 const lte = __webpack_require__(108)
-const gte = __webpack_require__(910)
+const gte = __webpack_require__(688)
 
 const outside = (version, range, hilo, options) => {
   version = new SemVer(version, options)
@@ -4535,12 +4508,87 @@ class ExecState extends events.EventEmitter {
 /***/ }),
 
 /***/ 910:
-/***/ (function(module, __unusedexports, __webpack_require__) {
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
 
-const compare = __webpack_require__(158)
-const gte = (a, b, loose) => compare(a, b, loose) >= 0
-module.exports = gte
+"use strict";
 
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const os = __importStar(__webpack_require__(87));
+/**
+ * Commands
+ *
+ * Command Format:
+ *   ::name key=value,key=value::message
+ *
+ * Examples:
+ *   ::warning::This is the message
+ *   ::set-env name=MY_VAR::some value
+ */
+function issueCommand(command, properties, message) {
+    const cmd = new Command(command, properties, message);
+    process.stdout.write(cmd.toString() + os.EOL);
+}
+exports.issueCommand = issueCommand;
+function issue(name, message = '') {
+    issueCommand(name, {}, message);
+}
+exports.issue = issue;
+const CMD_STRING = '::';
+class Command {
+    constructor(command, properties, message) {
+        if (!command) {
+            command = 'missing.command';
+        }
+        this.command = command;
+        this.properties = properties;
+        this.message = message;
+    }
+    toString() {
+        let cmdStr = CMD_STRING + this.command;
+        if (this.properties && Object.keys(this.properties).length > 0) {
+            cmdStr += ' ';
+            let first = true;
+            for (const key in this.properties) {
+                if (this.properties.hasOwnProperty(key)) {
+                    const val = this.properties[key];
+                    if (val) {
+                        if (first) {
+                            first = false;
+                        }
+                        else {
+                            cmdStr += ',';
+                        }
+                        cmdStr += `${key}=${escapeProperty(val)}`;
+                    }
+                }
+            }
+        }
+        cmdStr += `${CMD_STRING}${escapeData(this.message)}`;
+        return cmdStr;
+    }
+}
+function escapeData(s) {
+    return (s || '')
+        .replace(/%/g, '%25')
+        .replace(/\r/g, '%0D')
+        .replace(/\n/g, '%0A');
+}
+function escapeProperty(s) {
+    return (s || '')
+        .replace(/%/g, '%25')
+        .replace(/\r/g, '%0D')
+        .replace(/\n/g, '%0A')
+        .replace(/:/g, '%3A')
+        .replace(/,/g, '%2C');
+}
+//# sourceMappingURL=command.js.map
 
 /***/ }),
 
@@ -4752,7 +4800,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const command_1 = __webpack_require__(216);
+const command_1 = __webpack_require__(910);
 const os = __importStar(__webpack_require__(87));
 const path = __importStar(__webpack_require__(622));
 /**
