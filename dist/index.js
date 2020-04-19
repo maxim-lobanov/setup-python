@@ -2201,6 +2201,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const os = __importStar(__webpack_require__(87));
 const path = __importStar(__webpack_require__(622));
 const semver = __importStar(__webpack_require__(3));
+const exec = __importStar(__webpack_require__(628));
 const toolcache = __importStar(__webpack_require__(783));
 const fs = __importStar(__webpack_require__(747));
 let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
@@ -2278,7 +2279,7 @@ function useCpythonVersion(version, architecture) {
         const desugaredVersionSpec = desugarDevVersion(version);
         const semanticVersionSpec = pythonVersionToSemantic(desugaredVersionSpec);
         core.debug(`Semantic version spec of ${version} is ${semanticVersionSpec}`);
-        const installDir = tc.find('Python', semanticVersionSpec, architecture);
+        let installDir = tc.find('Python', semanticVersionSpec, architecture);
         if (!installDir) {
             core.info(`Can't find installed CPython ${semanticVersionSpec}; try to find in releases`);
             const manifestUrl = "https://raw.githubusercontent.com/actions/python-versions/master/versions-manifest.json";
@@ -2301,7 +2302,7 @@ function useCpythonVersion(version, architecture) {
                     x64Versions
                 ].join(os.EOL));
             }
-            core.info(`We've successfully found CPython ${semanticVersionSpec} in releases; installing...`);
+            core.info(`We've successfully found CPython ${semanticVersionSpec} in releases; downloading...`);
             const downloadUrl = foundRelease.files[0].download_url;
             const pythonPath = yield tc.downloadTool(downloadUrl);
             const fileName = path.basename(pythonPath, '.zip');
@@ -2311,6 +2312,9 @@ function useCpythonVersion(version, architecture) {
                     console.log(`contains file - ${file}`);
                 });
             });
+            core.info('installing...');
+            yield exec.exec(`sh ${pythonExtractedFolder}/setup.sh`);
+            installDir = tc.find('Python', semanticVersionSpec, architecture);
         }
         core.exportVariable('pythonLocation', installDir);
         core.addPath(installDir);

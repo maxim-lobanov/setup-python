@@ -3,8 +3,8 @@ import * as path from 'path';
 
 import * as semver from 'semver';
 
+import * as exec from '@actions/exec';
 import * as toolcache from './tool-cache';
-
 import * as fs from 'fs';
 
 let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
@@ -96,7 +96,7 @@ async function useCpythonVersion(
   const semanticVersionSpec = pythonVersionToSemantic(desugaredVersionSpec);
   core.debug(`Semantic version spec of ${version} is ${semanticVersionSpec}`);
 
-  const installDir: string | null = tc.find(
+  let installDir: string | null = tc.find(
     'Python',
     semanticVersionSpec,
     architecture
@@ -131,20 +131,29 @@ async function useCpythonVersion(
           x86Versions,
           x64Versions
         ].join(os.EOL)
-        );
-      }
+      );
+    }
 
-    core.info(`We've successfully found CPython ${semanticVersionSpec} in releases; installing...`);
+    core.info(`We've successfully found CPython ${semanticVersionSpec} in releases; downloading...`);
     const downloadUrl = foundRelease.files[0].download_url;
     const pythonPath = await tc.downloadTool(downloadUrl);
     const fileName = path.basename(pythonPath, '.zip');
     const pythonExtractedFolder = await tc.extractZip(pythonPath, `./${fileName}`);
-
+    
     fs.readdir(pythonExtractedFolder, (err, files) => {
       files.forEach(file => {
         console.log(`contains file - ${file}`);
       });
     });
+    
+    core.info('installing...');
+    await exec.exec(`sh ${pythonExtractedFolder}/setup.sh`);
+
+    installDir = tc.find(
+      'Python',
+      semanticVersionSpec,
+      architecture
+    );
   }
 
   core.exportVariable('pythonLocation', installDir);
