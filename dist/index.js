@@ -2198,9 +2198,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const os = __importStar(__webpack_require__(87));
 const path = __importStar(__webpack_require__(622));
 const semver = __importStar(__webpack_require__(3));
 const toolcache = __importStar(__webpack_require__(783));
+const fs = __importStar(__webpack_require__(747));
 let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
 if (!cacheDirectory) {
     let baseLocation;
@@ -2276,34 +2278,39 @@ function useCpythonVersion(version, architecture) {
         const desugaredVersionSpec = desugarDevVersion(version);
         const semanticVersionSpec = pythonVersionToSemantic(desugaredVersionSpec);
         core.debug(`Semantic version spec of ${version} is ${semanticVersionSpec}`);
-        core.info(`version ${version}`);
-        core.info(`semanticVersionSpec ${semanticVersionSpec}`);
         const installDir = tc.find('Python', semanticVersionSpec, architecture);
-        // if (!installDir) {
-        core.info(`Can't find installed CPython ${semanticVersionSpec}; try to find in releases`);
-        const manifestUrl = "https://raw.githubusercontent.com/akv-platform/toolcache-python-generation/master/versions-manifest.json";
-        const manifest = yield toolcache.getManifestFromUrl(manifestUrl);
-        const release = yield toolcache.findFromManifest(semanticVersionSpec, true, manifest);
-        core.info(`URL finded release ${release === null || release === void 0 ? void 0 : release.release_url}`);
-        // }
-        // Fail and list available versions
-        // const x86Versions = tc
-        //   .findAllVersions('Python', 'x86')
-        //   .map(s => `${s} (x86)`)
-        //   .join(os.EOL);
-        // const x64Versions = tc
-        //   .findAllVersions('Python', 'x64')
-        //   .map(s => `${s} (x64)`)
-        //   .join(os.EOL);
         if (!installDir) {
-            throw new Error(
-            // [
-            //   `Version ${version} with arch ${architecture} not found`,
-            //   'Available versions:',
-            //   x86Versions,
-            //   x64Versions
-            // ].join(os.EOL)
-            );
+            core.info(`Can't find installed CPython ${semanticVersionSpec}; try to find in releases`);
+            const manifestUrl = "https://raw.githubusercontent.com/actions/python-versions/master/versions-manifest.json";
+            const manifest = yield toolcache.getManifestFromUrl(manifestUrl);
+            const foundRelease = yield toolcache.findFromManifest(semanticVersionSpec, true, manifest);
+            if (!foundRelease) {
+                // Fail and list available versions
+                const x86Versions = tc
+                    .findAllVersions('Python', 'x86')
+                    .map(s => `${s} (x86)`)
+                    .join(os.EOL);
+                const x64Versions = tc
+                    .findAllVersions('Python', 'x64')
+                    .map(s => `${s} (x64)`)
+                    .join(os.EOL);
+                throw new Error([
+                    `Version ${version} with arch ${architecture} not found`,
+                    'Available versions:',
+                    x86Versions,
+                    x64Versions
+                ].join(os.EOL));
+            }
+            core.info(`We've successfully found CPython ${semanticVersionSpec} in releases; installing...`);
+            const downloadUrl = foundRelease.files[0].download_url;
+            const pythonPath = yield tc.downloadTool(downloadUrl);
+            const fileName = path.basename(pythonPath, '.zip');
+            const pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
+            fs.readdir(pythonExtractedFolder, (err, files) => {
+                files.forEach(file => {
+                    console.log(`contains file - ${file}`);
+                });
+            });
         }
         core.exportVariable('pythonLocation', installDir);
         core.addPath(installDir);
