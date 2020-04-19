@@ -2313,7 +2313,9 @@ function useCpythonVersion(version, architecture) {
                 });
             });
             core.info('installing...');
-            yield exec.exec('powershell', [`
+            yield exec.exec('powershell', [
+                '',
+                `
       Push-Location -Path ${pythonExtractedFolder}
       if (${IS_WINDOWS}) {
         Invoke-Expression ./setup.ps1
@@ -2321,7 +2323,8 @@ function useCpythonVersion(version, architecture) {
         Invoke-Expression "sh ./setup.sh"
       }
       Pop-Location
-      `]);
+      `
+            ]);
             installDir = tc.find('Python', semanticVersionSpec, architecture);
         }
         core.exportVariable('pythonLocation', installDir);

@@ -147,8 +147,9 @@ async function useCpythonVersion(
     });
     
     core.info('installing...');
-    await exec.exec('powershell', 
-      [`
+    await exec.exec('powershell', [
+      '',
+      `
       Push-Location -Path ${pythonExtractedFolder}
       if (${IS_WINDOWS}) {
         Invoke-Expression ./setup.ps1
