@@ -147,7 +147,16 @@ async function useCpythonVersion(
     });
     
     core.info('installing...');
-    await exec.exec(`sh ${pythonExtractedFolder}/setup.sh`);
+    await exec.exec('powershell', 
+      [`
+      Push-Location -Path ${pythonExtractedFolder}
+      if (${IS_WINDOWS}) {
+        Invoke-Expression ./setup.ps1
+      } else {
+        Invoke-Expression "sh ./setup.sh"
+      }
+      Pop-Location
+      `]);
 
     installDir = tc.find(
       'Python',
