@@ -2279,19 +2279,20 @@ function installCpython(release) {
         const pythonPath = yield tc.downloadTool(downloadUrl);
         const fileName = path.basename(pythonPath, '.zip');
         const pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
-        // const options: ExecOptions = {
-        //   listeners: {
-        //     stdout: (data: Buffer) => {
-        //       core.debug(data.toString());
-        //     }
-        //   }
-        // }
+        const options = {
+            silent: true,
+            listeners: {
+                stdout: (data) => {
+                    core.debug(data.toString());
+                }
+            }
+        };
         process.chdir(pythonExtractedFolder);
         if (IS_WINDOWS) {
-            yield exec.exec('pwsh', ['./setup.ps1']);
+            yield exec.exec('pwsh', ['./setup.ps1'], options);
         }
         else {
-            yield exec.exec('sh', ['./setup.sh']);
+            yield exec.exec('sh', ['./setup.sh'], options);
         }
         process.chdir('..');
     });

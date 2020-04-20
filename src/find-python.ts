@@ -95,19 +95,20 @@ async function installCpython (release: toolcache.IToolRelease) {
   const fileName = path.basename(pythonPath, '.zip');
   const pythonExtractedFolder = await tc.extractZip(pythonPath, `./${fileName}`);
 
-  // const options: ExecOptions = {
-  //   listeners: {
-  //     stdout: (data: Buffer) => {
-  //       core.debug(data.toString());
-  //     }
-  //   }
-  // }
+  const options: ExecOptions = {
+    silent: true,
+    listeners: {
+      stdout: (data: Buffer) => {
+        core.debug(data.toString());
+      }
+    }
+  }
 
   process.chdir(pythonExtractedFolder);
   if (IS_WINDOWS) {
-    await exec.exec('pwsh', ['./setup.ps1']);
+    await exec.exec('pwsh', ['./setup.ps1'], options);
   } else {
-    await exec.exec('sh', ['./setup.sh']);
+    await exec.exec('sh', ['./setup.sh'], options);
   }
   process.chdir('..');
 }
