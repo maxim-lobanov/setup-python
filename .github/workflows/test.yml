@@ -6,6 +6,17 @@ on:
     types: [created, deleted]
 
 jobs:
+  powershell-version:
+    name: Setup latest version
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
+    steps:
+    - name: Validate version
+      run: $PSVersionTable.PSVersion
+      shell: powershell
+
   default-version:
     name: Setup latest version
     runs-on: ${{ matrix.os }}
@@ -63,7 +74,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest]
+        os: [macos-latest]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
