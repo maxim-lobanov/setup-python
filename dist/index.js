@@ -2291,7 +2291,7 @@ function installCpython(release) {
             yield exec.exec('pwsh', ['./setup.ps1'], options);
         }
         else {
-            yield exec.exec('sh', [' ./setup.sh'], options);
+            yield exec.exec('sh', ['./setup.sh'], options);
         }
         process.chdir('..');
     });
