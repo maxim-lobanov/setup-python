@@ -148,8 +148,8 @@ async function useCpythonVersion(
     });
     
     core.info('installing...');
-    const powershellPath = await io.which('powershell', true)
-    await exec.exec(`"${powershellPath}"`, [
+    // const powershellPath = await io.which('powershell', true)
+    await exec.exec("powershell", [
       '-Command',
       `
       Push-Location -Path ${pythonExtractedFolder}
