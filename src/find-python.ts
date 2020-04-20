@@ -97,7 +97,7 @@ async function installCpython (release: toolcache.IToolRelease) {
 
   const options: ExecOptions = {
     listeners: {
-      debug: (data: string) => {
+      stdline: (data: string) => {
         core.debug(data);
       }
     }
