@@ -4,8 +4,9 @@ import * as path from 'path';
 import * as semver from 'semver';
 
 import * as exec from '@actions/exec';
+import { ExecOptions } from '@actions/exec/lib/interfaces'
+
 import * as toolcache from './tool-cache';
-import * as io from '@actions/io'
 
 let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
 
@@ -94,11 +95,19 @@ async function installCpython (release: toolcache.IToolRelease) {
   const fileName = path.basename(pythonPath, '.zip');
   const pythonExtractedFolder = await tc.extractZip(pythonPath, `./${fileName}`);
 
+  const options: ExecOptions = {
+    listeners: {
+      debug: (data: string) => {
+        core.debug(data);
+      }
+    }
+  }
+
   process.chdir(pythonExtractedFolder);
   if (IS_WINDOWS) {
-    await exec.exec('pwsh ./setup.ps1');
+    await exec.exec('pwsh', ['./setup.ps1'], options);
   } else {
-    await exec.exec('sh ./setup.sh');
+    await exec.exec('sh', [' ./setup.sh'], options);
   }
   process.chdir('..');
 }
