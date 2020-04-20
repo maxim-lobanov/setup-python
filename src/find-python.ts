@@ -94,8 +94,8 @@ async function installCpython (release: toolcache.IToolRelease) {
   const fileName = path.basename(pythonPath, '.zip');
   const pythonExtractedFolder = await tc.extractZip(pythonPath, `./${fileName}`);
   
-  const powershellPath = await io.which('powershell', true)
-  await exec.exec(`"${powershellPath}"`, [
+  const pwshPath = await io.which('pwsh', true)
+  await exec.exec(`"${pwshPath}"`, [
     '-Command',
     `
     Push-Location -Path ${pythonExtractedFolder}

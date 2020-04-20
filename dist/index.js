@@ -2280,8 +2280,8 @@ function installCpython(release) {
         const pythonPath = yield tc.downloadTool(downloadUrl);
         const fileName = path.basename(pythonPath, '.zip');
         const pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
-        const powershellPath = yield io.which('powershell', true);
-        yield exec.exec(`"${powershellPath}"`, [
+        const pwshPath = yield io.which('pwsh', true);
+        yield exec.exec(`"${pwshPath}"`, [
             '-Command',
             `
     Push-Location -Path ${pythonExtractedFolder}
