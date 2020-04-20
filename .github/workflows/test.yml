@@ -7,11 +7,11 @@ on:
 
 jobs:
   default-version:
-    name: Macos. Setup latest version
+    name: Setup latest version
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
+        os: [macos-latest, windows-latest]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -23,11 +23,11 @@ jobs:
       run: python --version
 
   pre-installed-version:
-    name: Macos. Setup pre-installed version (3.7.6)
+    name: Setup pre-installed version (3.7.6)
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
+        os: [macos-latest, windows-latest]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -41,11 +41,11 @@ jobs:
       run: python --version
 
   version-from-releases:
-    name: Macos. Setup version from releases (3.6.8)
+    name: Setup version from releases (3.6.8)
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
+        os: [macos-latest, windows-latest]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -59,11 +59,11 @@ jobs:
       run: python --version
 
   setup-on-clean-machine:
-    name: Macos. Setup version on clean machine (2.7.17)
+    name: Setup version on clean machine (2.7.17)
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
+        os: [macos-latest, windows-latest]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
