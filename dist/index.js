@@ -2203,7 +2203,7 @@ const path = __importStar(__webpack_require__(622));
 const semver = __importStar(__webpack_require__(3));
 const exec = __importStar(__webpack_require__(628));
 const toolcache = __importStar(__webpack_require__(783));
-const fs = __importStar(__webpack_require__(747));
+const io = __importStar(__webpack_require__(242));
 let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
 if (!cacheDirectory) {
     let baseLocation;
@@ -2274,6 +2274,28 @@ function usePyPy(majorVersion, architecture) {
     core.setOutput('python-version', impl);
     return { impl: impl, version: versionFromPath(installDir) };
 }
+function installPython(release) {
+    return __awaiter(this, void 0, void 0, function* () {
+        core.info(`Release files length ${release.files.length}`);
+        const downloadUrl = release.files[0].download_url;
+        const pythonPath = yield tc.downloadTool(downloadUrl);
+        const fileName = path.basename(pythonPath, '.zip');
+        const pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
+        const powershellPath = yield io.which('powershell', true);
+        yield exec.exec(`"${powershellPath}"`, [
+            '-Command',
+            `
+    Push-Location -Path ${pythonExtractedFolder}
+    if (${IS_WINDOWS}) {
+      Invoke-Expression ./setup.ps1
+    } else {
+      Invoke-Expression "sh ./setup.sh"
+    }
+    Pop-Location
+    `
+        ]);
+    });
+}
 function useCpythonVersion(version, architecture) {
     return __awaiter(this, void 0, void 0, function* () {
         const desugaredVersionSpec = desugarDevVersion(version);
@@ -2302,30 +2324,8 @@ function useCpythonVersion(version, architecture) {
                     x64Versions
                 ].join(os.EOL));
             }
-            core.info(`We've successfully found CPython ${semanticVersionSpec} in releases; downloading...`);
-            const downloadUrl = foundRelease.files[0].download_url;
-            const pythonPath = yield tc.downloadTool(downloadUrl);
-            const fileName = path.basename(pythonPath, '.zip');
-            const pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
-            fs.readdir(pythonExtractedFolder, (err, files) => {
-                files.forEach(file => {
-                    console.log(`contains file - ${file}`);
-                });
-            });
-            core.info('installing...');
-            // const powershellPath = await io.which('powershell', true)
-            yield exec.exec("powershell", [
-                '-Command',
-                `
-      Push-Location -Path ${pythonExtractedFolder}
-      if (${IS_WINDOWS}) {
-        Invoke-Expression ./setup.ps1
-      } else {
-        Invoke-Expression "sh ./setup.sh"
-      }
-      Pop-Location
-      `
-            ]);
+            core.info(`We've successfully found CPython ${semanticVersionSpec} in releases; installing...`);
+            yield installPython(foundRelease);
             installDir = tc.find('Python', semanticVersionSpec, architecture);
         }
         core.exportVariable('pythonLocation', installDir);

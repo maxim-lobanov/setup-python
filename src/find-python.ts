@@ -89,6 +89,28 @@ function usePyPy(majorVersion: 2 | 3, architecture: string): InstalledVersion {
   return {impl: impl, version: versionFromPath(installDir)};
 }
 
+async function installPython (release: toolcache.IToolRelease) {
+  core.info(`Release files length ${release.files.length}`);
+  const downloadUrl = release.files[0].download_url;
+  const pythonPath = await tc.downloadTool(downloadUrl);
+  const fileName = path.basename(pythonPath, '.zip');
+  const pythonExtractedFolder = await tc.extractZip(pythonPath, `./${fileName}`);
+  
+  const powershellPath = await io.which('powershell', true)
+  await exec.exec(`"${powershellPath}"`, [
+    '-Command',
+    `
+    Push-Location -Path ${pythonExtractedFolder}
+    if (${IS_WINDOWS}) {
+      Invoke-Expression ./setup.ps1
+    } else {
+      Invoke-Expression "sh ./setup.sh"
+    }
+    Pop-Location
+    `
+  ]);
+}
+
 async function useCpythonVersion(
   version: string,
   architecture: string
@@ -135,31 +157,8 @@ async function useCpythonVersion(
       );
     }
 
-    core.info(`We've successfully found CPython ${semanticVersionSpec} in releases; downloading...`);
-    const downloadUrl = foundRelease.files[0].download_url;
-    const pythonPath = await tc.downloadTool(downloadUrl);
-    const fileName = path.basename(pythonPath, '.zip');
-    const pythonExtractedFolder = await tc.extractZip(pythonPath, `./${fileName}`);
-    
-    fs.readdir(pythonExtractedFolder, (err, files) => {
-      files.forEach(file => {
-        console.log(`contains file - ${file}`);
-      });
-    });
-    
-    core.info('installing...');
-    // const powershellPath = await io.which('powershell', true)
-    await exec.exec("powershell", [
-      '-Command',
-      `
-      Push-Location -Path ${pythonExtractedFolder}
-      if (${IS_WINDOWS}) {
-        Invoke-Expression ./setup.ps1
-      } else {
-        Invoke-Expression "sh ./setup.sh"
-      }
-      Pop-Location
-      `]);
+    core.info(`We've successfully found CPython ${semanticVersionSpec} in releases; installing...`);
+    await installPython(foundRelease);
 
     installDir = tc.find(
       'Python',
