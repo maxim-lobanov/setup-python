@@ -35,7 +35,7 @@ jobs:
 
     - name: setup-python ${{ matrix.python }}
       uses: ./
-      if: matrix.python == 3.5.9
+      if: 'matrix.python' == '3.5.9'
       with:
         python-version: ${{ matrix.python }}
 
