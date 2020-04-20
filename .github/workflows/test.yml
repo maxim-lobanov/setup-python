@@ -6,7 +6,7 @@ on:
     types: [created, deleted]
 
 jobs:
-  Macos:
+  default-version:
     name: Macos. Setup latest version
     runs-on: macos-latest
     steps:
@@ -19,7 +19,7 @@ jobs:
     - name: Validate version
       run: python --version
 
-  Macos:
+  pre-installed-version:
     name: Macos. Setup pre-installed version (3.7.6)
     runs-on: macos-latest
     steps:
@@ -34,7 +34,7 @@ jobs:
     - name: Validate version
       run: python --version
 
-  Macos:
+  version-from-releases:
     name: Macos. Setup version from releases (3.6.8)
     runs-on: macos-latest
     steps:
@@ -49,7 +49,7 @@ jobs:
     - name: Validate version
       run: python --version
 
-  Macos:
+  setup-on-clean-machine:
     name: Macos. Setup version on clean machine (2.7.17)
     runs-on: macos-latest
     steps:
