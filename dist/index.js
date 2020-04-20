@@ -2281,8 +2281,8 @@ function installCpython(release) {
         const pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
         const options = {
             listeners: {
-                stdline: (data) => {
-                    core.debug(data);
+                stdout: (data) => {
+                    core.debug(data.toString());
                 }
             }
         };
