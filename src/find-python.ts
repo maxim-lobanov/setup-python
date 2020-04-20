@@ -6,6 +6,7 @@ import * as semver from 'semver';
 import * as exec from '@actions/exec';
 import * as toolcache from './tool-cache';
 import * as fs from 'fs';
+import * as io from '@actions/io'
 
 let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
 
@@ -147,8 +148,9 @@ async function useCpythonVersion(
     });
     
     core.info('installing...');
-    await exec.exec('powershell', [
-      '',
+    const powershellPath = await io.which('powershell', true)
+    await exec.exec(`"${powershellPath}"`, [
+      '-Command',
       `
       Push-Location -Path ${pythonExtractedFolder}
       if (${IS_WINDOWS}) {

@@ -2204,6 +2204,7 @@ const semver = __importStar(__webpack_require__(3));
 const exec = __importStar(__webpack_require__(628));
 const toolcache = __importStar(__webpack_require__(783));
 const fs = __importStar(__webpack_require__(747));
+const io = __importStar(__webpack_require__(242));
 let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
 if (!cacheDirectory) {
     let baseLocation;
@@ -2313,8 +2314,9 @@ function useCpythonVersion(version, architecture) {
                 });
             });
             core.info('installing...');
-            yield exec.exec('powershell', [
-                '',
+            const powershellPath = yield io.which('powershell', true);
+            yield exec.exec(`"${powershellPath}"`, [
+                '-Command',
                 `
       Push-Location -Path ${pythonExtractedFolder}
       if (${IS_WINDOWS}) {
