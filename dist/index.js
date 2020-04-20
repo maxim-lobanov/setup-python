@@ -2280,6 +2280,7 @@ function installCpython(release) {
         const fileName = path.basename(pythonPath, '.zip');
         const pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
         const options = {
+            cwd: pythonExtractedFolder,
             silent: true,
             listeners: {
                 stdout: (data) => {
@@ -2287,14 +2288,12 @@ function installCpython(release) {
                 }
             }
         };
-        process.chdir(pythonExtractedFolder);
         if (IS_WINDOWS) {
             yield exec.exec('pwsh', ['./setup.ps1'], options);
         }
         else {
             yield exec.exec('sh', ['./setup.sh'], options);
         }
-        process.chdir('..');
     });
 }
 function useCpythonVersion(version, architecture) {

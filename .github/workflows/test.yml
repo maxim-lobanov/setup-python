@@ -1,9 +1,5 @@
 name: Validate 'setup-python'
-on:
-  issue_comment:
-    types: [created]
-  pull_request_review_comment:
-    types: [created, deleted]
+on: [push, pull_request]
 
 jobs:
   default-version:
