@@ -35,9 +35,9 @@ jobs:
 
     - name: setup-python ${{ matrix.python }}
       uses: ./
+      if: "${{ matrix.os }} == windows-latest && (${{ matrix.python }} == 3.5.9 || ${{ matrix.python }} == 3.6.10)"
       with:
         python-version: ${{ matrix.python }}
-      if: "!( ${{ matrix.os }} == windows-latest && (${{ matrix.python }} == 3.5.9 || ${{ matrix.python }} == 3.6.10) )"
 
     - name: Validate version
       run: python --version
