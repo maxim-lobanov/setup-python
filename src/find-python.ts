@@ -93,20 +93,14 @@ async function installCpython (release: toolcache.IToolRelease) {
   const pythonPath = await tc.downloadTool(downloadUrl);
   const fileName = path.basename(pythonPath, '.zip');
   const pythonExtractedFolder = await tc.extractZip(pythonPath, `./${fileName}`);
-  
-  const pwshPath = await io.which('pwsh', true)
-  await exec.exec(`"${pwshPath}"`, [
-    '-Command',
-    `
-    Push-Location -Path ${pythonExtractedFolder}
-    if (${IS_WINDOWS}) {
-      Invoke-Expression ./setup.ps1
-    } else {
-      Invoke-Expression "sh ./setup.sh"
-    }
-    Pop-Location
-    `
-  ]);
+
+  process.chdir(pythonExtractedFolder);
+  if (IS_WINDOWS) {
+    await exec.exec('pwsh ./setup.ps1');
+  } else {
+    await exec.exec('sh ./setup.sh');
+  }
+  process.chdir('..');
 }
 
 async function useCpythonVersion(

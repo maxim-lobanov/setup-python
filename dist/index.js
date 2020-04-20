@@ -2203,7 +2203,6 @@ const path = __importStar(__webpack_require__(622));
 const semver = __importStar(__webpack_require__(3));
 const exec = __importStar(__webpack_require__(628));
 const toolcache = __importStar(__webpack_require__(783));
-const io = __importStar(__webpack_require__(242));
 let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
 if (!cacheDirectory) {
     let baseLocation;
@@ -2280,19 +2279,14 @@ function installCpython(release) {
         const pythonPath = yield tc.downloadTool(downloadUrl);
         const fileName = path.basename(pythonPath, '.zip');
         const pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
-        const pwshPath = yield io.which('pwsh', true);
-        yield exec.exec(`"${pwshPath}"`, [
-            '-Command',
-            `
-    Push-Location -Path ${pythonExtractedFolder}
-    if (${IS_WINDOWS}) {
-      Invoke-Expression ./setup.ps1
-    } else {
-      Invoke-Expression "sh ./setup.sh"
-    }
-    Pop-Location
-    `
-        ]);
+        process.chdir(pythonExtractedFolder);
+        if (IS_WINDOWS) {
+            yield exec.exec('pwsh ./setup.ps1');
+        }
+        else {
+            yield exec.exec('sh ./setup.sh');
+        }
+        process.chdir('..');
     });
 }
 function useCpythonVersion(version, architecture) {
