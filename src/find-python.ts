@@ -5,7 +5,6 @@ import * as semver from 'semver';
 
 import * as exec from '@actions/exec';
 import * as toolcache from './tool-cache';
-import * as fs from 'fs';
 import * as io from '@actions/io'
 
 let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
@@ -89,8 +88,7 @@ function usePyPy(majorVersion: 2 | 3, architecture: string): InstalledVersion {
   return {impl: impl, version: versionFromPath(installDir)};
 }
 
-async function installPython (release: toolcache.IToolRelease) {
-  core.info(`Release files length ${release.files.length}`);
+async function installCpython (release: toolcache.IToolRelease) {
   const downloadUrl = release.files[0].download_url;
   const pythonPath = await tc.downloadTool(downloadUrl);
   const fileName = path.basename(pythonPath, '.zip');
@@ -125,8 +123,6 @@ async function useCpythonVersion(
     architecture
   );
   if (!installDir) {
-    core.info(`Can't find installed CPython ${semanticVersionSpec}; try to find in releases`);
-    
     const manifestUrl = "https://raw.githubusercontent.com/actions/python-versions/master/versions-manifest.json"
     const manifest: toolcache.IToolRelease[] = await toolcache.getManifestFromUrl(manifestUrl)
     const foundRelease: toolcache.IToolRelease | undefined = await toolcache.findFromManifest(
@@ -146,19 +142,21 @@ async function useCpythonVersion(
       .findAllVersions('Python', 'x64')
       .map(s => `${s} (x64)`)
       .join(os.EOL);
+
+      const gitHubReleasesUrl = "https://github.com/actions/python-versions/releases";
       
       throw new Error(
         [
           `Version ${version} with arch ${architecture} not found`,
-          'Available versions:',
+          'Installed versions:',
           x86Versions,
-          x64Versions
+          x64Versions,
+          `We can also install and setup Python versions that you can find here: ${gitHubReleasesUrl}`
         ].join(os.EOL)
       );
     }
 
-    core.info(`We've successfully found CPython ${semanticVersionSpec} in releases; installing...`);
-    await installPython(foundRelease);
+    await installCpython(foundRelease);
 
     installDir = tc.find(
       'Python',

@@ -2274,9 +2274,8 @@ function usePyPy(majorVersion, architecture) {
     core.setOutput('python-version', impl);
     return { impl: impl, version: versionFromPath(installDir) };
 }
-function installPython(release) {
+function installCpython(release) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.info(`Release files length ${release.files.length}`);
         const downloadUrl = release.files[0].download_url;
         const pythonPath = yield tc.downloadTool(downloadUrl);
         const fileName = path.basename(pythonPath, '.zip');
@@ -2303,7 +2302,6 @@ function useCpythonVersion(version, architecture) {
         core.debug(`Semantic version spec of ${version} is ${semanticVersionSpec}`);
         let installDir = tc.find('Python', semanticVersionSpec, architecture);
         if (!installDir) {
-            core.info(`Can't find installed CPython ${semanticVersionSpec}; try to find in releases`);
             const manifestUrl = "https://raw.githubusercontent.com/actions/python-versions/master/versions-manifest.json";
             const manifest = yield toolcache.getManifestFromUrl(manifestUrl);
             const foundRelease = yield toolcache.findFromManifest(semanticVersionSpec, true, manifest);
@@ -2317,15 +2315,16 @@ function useCpythonVersion(version, architecture) {
                     .findAllVersions('Python', 'x64')
                     .map(s => `${s} (x64)`)
                     .join(os.EOL);
+                const gitHubReleasesUrl = "https://github.com/actions/python-versions/releases";
                 throw new Error([
                     `Version ${version} with arch ${architecture} not found`,
-                    'Available versions:',
+                    'Installed versions:',
                     x86Versions,
-                    x64Versions
+                    x64Versions,
+                    `We can also install and setup Python versions that you can find here: ${gitHubReleasesUrl}`
                 ].join(os.EOL));
             }
-            core.info(`We've successfully found CPython ${semanticVersionSpec} in releases; installing...`);
-            yield installPython(foundRelease);
+            yield installCpython(foundRelease);
             installDir = tc.find('Python', semanticVersionSpec, architecture);
         }
         core.exportVariable('pythonLocation', installDir);
