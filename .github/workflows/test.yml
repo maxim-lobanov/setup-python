@@ -70,7 +70,7 @@ jobs:
 
     - name: Clean machine
       run: |
-        if (${{ matrix.os }} -eq "windows-latest") {
+        if ("${{ matrix.os }}" -eq "windows-latest") {
           $PythonFilter = "Name like '%Python%'"
           Get-WmiObject Win32_Product -Filter $PythonFilter | Foreach-Object { 
               Write-Host "Uninstalling $($_.Name) ..."
