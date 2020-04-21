@@ -67,7 +67,6 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        architecture: [x86, x64]
         python: [2.7.17, 3.5.4, 3.6.8, 3.7.6, 3.8.2]
     steps:
     - name: Checkout
@@ -88,7 +87,6 @@ jobs:
       uses: ./
       with:
         python-version: ${{ matrix.python }}
-        architecture: ${{ matrix.architecture }}
 
     - name: Validate version
       run: python --version
