@@ -1242,6 +1242,7 @@ const tc = __importStar(__webpack_require__(322));
 const exec = __importStar(__webpack_require__(628));
 const MANIFEST_URL = "https://raw.githubusercontent.com/actions/python-versions/master/versions-manifest.json";
 const IS_WINDOWS = process.platform === 'win32';
+const IS_LINUX = process.platform === 'linux';
 function findReleaseFromManifest(semanticVersionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
         const manifest = yield toolcache.getManifestFromUrl(MANIFEST_URL);
@@ -1267,8 +1268,11 @@ function installCpythonFromRelease(release) {
         if (IS_WINDOWS) {
             yield exec.exec('pwsh', ['./setup.ps1'], options);
         }
-        else {
+        else if (IS_LINUX) {
             yield exec.exec('bash', ['-c', 'sudo bash ./setup.sh'], options);
+        }
+        else {
+            yield exec.exec('bash', ['./setup.sh'], options);
         }
     });
 }

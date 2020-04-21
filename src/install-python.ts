@@ -8,6 +8,7 @@ import { ExecOptions } from '@actions/exec/lib/interfaces'
 
 const MANIFEST_URL = "https://raw.githubusercontent.com/actions/python-versions/master/versions-manifest.json"
 const IS_WINDOWS = process.platform === 'win32';
+const IS_LINUX = process.platform === 'linux';
 
 export async function findReleaseFromManifest(semanticVersionSpec: string): Promise<toolcache.IToolRelease | undefined> {
   const manifest: toolcache.IToolRelease[] = await toolcache.getManifestFromUrl(MANIFEST_URL);
@@ -32,7 +33,9 @@ export async function installCpythonFromRelease (release: toolcache.IToolRelease
   
   if (IS_WINDOWS) {
     await exec.exec('pwsh', ['./setup.ps1'], options);
-  } else {
+  } else if (IS_LINUX) {
     await exec.exec('bash', ['-c', 'sudo bash ./setup.sh'], options);
+  } else {
+    await exec.exec('bash', ['./setup.sh'], options);
   }
 }
