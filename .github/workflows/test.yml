@@ -43,22 +43,41 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
+        os: [macos-latest, ubuntu-16.04, ubuntu-18.04]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
     - name: Clean machine
       run: |
-        if ("${{ matrix.os }}" -eq "windows-latest") {
-          $PythonFilter = "Name like '%Python%'"
-          Get-WmiObject Win32_Product -Filter $PythonFilter | Foreach-Object { 
-              Write-Host "Uninstalling $($_.Name) ..."
-              $_.Uninstall() | Out-Null 
-          }
-        }
         Remove-Item -Path "${env:AGENT_TOOLSDIRECTORY}/Python" -Recurse -Force
       shell: pwsh
+
+    - name: setup-python 2.7.17
+      uses: ./
+      with:
+        python-version: 2.7.17
+
+    - name: Validate version
+      run: python --version
+
+  setup-on-clean-machine-win:
+    name: Setup version on clean machine (2.7.17)
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Clean machine
+      run: |
+        $PythonFilter = "Name like '%Python%'"
+        Get-WmiObject Win32_Product -Filter $PythonFilter | Foreach-Object { 
+            Write-Host "Uninstalling $($_.Name) ..."
+            $_.Uninstall() | Out-Null 
+        }
+
+        Remove-Item -Path "${env:AGENT_TOOLSDIRECTORY}/Python" -Recurse -Force
+      shell: powershell
 
     - name: setup-python 2.7.17
       uses: ./
