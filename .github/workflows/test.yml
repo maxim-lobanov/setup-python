@@ -63,7 +63,7 @@ jobs:
       run: python --version
 
   setup-on-clean-machine-win:
-    name: Setup version on clean machine (2.7.17)
+    name: Setup version on clean machine
     runs-on: windows-latest
     strategy:
       matrix:
