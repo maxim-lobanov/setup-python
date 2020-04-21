@@ -3,10 +3,8 @@ import * as path from 'path';
 
 import * as semver from 'semver';
 
-import * as exec from '@actions/exec';
-import { ExecOptions } from '@actions/exec/lib/interfaces'
-
 import * as toolcache from './tool-cache';
+import * as installer from './install-python';
 
 let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
 
@@ -28,6 +26,7 @@ if (!cacheDirectory) {
 import * as core from '@actions/core';
 import * as tc from '@actions/tool-cache';
 
+const GITHUB_RELEASES_URL = "https://github.com/actions/python-versions/releases";
 const IS_WINDOWS = process.platform === 'win32';
 
 // Python has "scripts" or "bin" directories where command-line tools that come with packages are installed.
@@ -89,29 +88,6 @@ function usePyPy(majorVersion: 2 | 3, architecture: string): InstalledVersion {
   return {impl: impl, version: versionFromPath(installDir)};
 }
 
-async function installCpython (release: toolcache.IToolRelease) {
-  const downloadUrl = release.files[0].download_url;
-  const pythonPath = await tc.downloadTool(downloadUrl);
-  const fileName = path.basename(pythonPath, '.zip');
-  const pythonExtractedFolder = await tc.extractZip(pythonPath, `./${fileName}`);
-
-  const options: ExecOptions = {
-    cwd: pythonExtractedFolder,
-    silent: true,
-    listeners: {
-      stdout: (data: Buffer) => {
-        core.debug(data.toString());
-      }
-    }
-  }
-
-  if (IS_WINDOWS) {
-    await exec.exec('pwsh', ['./setup.ps1'], options);
-  } else {
-    await exec.exec('sh', ['./setup.sh'], options);
-  }
-}
-
 async function useCpythonVersion(
   version: string,
   architecture: string
@@ -126,13 +102,7 @@ async function useCpythonVersion(
     architecture
   );
   if (!installDir) {
-    const manifestUrl = "https://raw.githubusercontent.com/actions/python-versions/master/versions-manifest.json"
-    const manifest: toolcache.IToolRelease[] = await toolcache.getManifestFromUrl(manifestUrl)
-    const foundRelease: toolcache.IToolRelease | undefined = await toolcache.findFromManifest(
-      semanticVersionSpec,
-      true,
-      manifest
-    );
+    const foundRelease: toolcache.IToolRelease | undefined = await installer.findReleaseFromManifest(semanticVersionSpec);
       
     if (!foundRelease) {
       // Fail and list available versions
@@ -146,7 +116,6 @@ async function useCpythonVersion(
       .map(s => `${s} (x64)`)
       .join(os.EOL);
 
-      const gitHubReleasesUrl = "https://github.com/actions/python-versions/releases";
       
       throw new Error(
         [
@@ -154,12 +123,12 @@ async function useCpythonVersion(
           'Installed versions:',
           x86Versions,
           x64Versions,
-          `We can also install and setup Python versions that you can find here: ${gitHubReleasesUrl}`
+          `We can also install and setup Python versions that you can find here: ${GITHUB_RELEASES_URL}`
         ].join(os.EOL)
       );
     }
 
-    await installCpython(foundRelease);
+    await installer.installCpythonFromRelease(foundRelease);
 
     installDir = tc.find(
       'Python',

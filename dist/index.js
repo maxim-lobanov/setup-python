@@ -103,6 +103,13 @@ module.exports = require("tls");
 
 /***/ }),
 
+/***/ 34:
+/***/ (function(module) {
+
+module.exports = require("https");
+
+/***/ }),
+
 /***/ 60:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
@@ -1207,9 +1214,66 @@ const testSet = (set, version, options) => {
 /***/ }),
 
 /***/ 211:
-/***/ (function(module) {
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
 
-module.exports = require("https");
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const toolcache = __importStar(__webpack_require__(783));
+const path = __importStar(__webpack_require__(622));
+const core = __importStar(__webpack_require__(915));
+const tc = __importStar(__webpack_require__(322));
+const exec = __importStar(__webpack_require__(628));
+const MANIFEST_URL = "https://raw.githubusercontent.com/actions/python-versions/master/versions-manifest.json";
+const IS_WINDOWS = process.platform === 'win32';
+function findReleaseFromManifest(semanticVersionSpec) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const manifest = yield toolcache.getManifestFromUrl(MANIFEST_URL);
+        return yield toolcache.findFromManifest(semanticVersionSpec, true, manifest);
+    });
+}
+exports.findReleaseFromManifest = findReleaseFromManifest;
+function installCpythonFromRelease(release) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const downloadUrl = release.files[0].download_url;
+        const pythonPath = yield tc.downloadTool(downloadUrl);
+        const fileName = path.basename(pythonPath, '.zip');
+        const pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
+        const options = {
+            cwd: pythonExtractedFolder,
+            silent: true,
+            listeners: {
+                stdout: (data) => {
+                    core.debug(data.toString());
+                }
+            }
+        };
+        if (IS_WINDOWS) {
+            yield exec.exec('pwsh', ['./setup.ps1'], options);
+        }
+        else {
+            yield exec.exec('sh', ['./setup.sh'], options);
+        }
+    });
+}
+exports.installCpythonFromRelease = installCpythonFromRelease;
+
 
 /***/ }),
 
@@ -2201,8 +2265,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const os = __importStar(__webpack_require__(87));
 const path = __importStar(__webpack_require__(622));
 const semver = __importStar(__webpack_require__(3));
-const exec = __importStar(__webpack_require__(628));
-const toolcache = __importStar(__webpack_require__(783));
+const installer = __importStar(__webpack_require__(211));
 let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
 if (!cacheDirectory) {
     let baseLocation;
@@ -2222,6 +2285,7 @@ if (!cacheDirectory) {
 }
 const core = __importStar(__webpack_require__(915));
 const tc = __importStar(__webpack_require__(322));
+const GITHUB_RELEASES_URL = "https://github.com/actions/python-versions/releases";
 const IS_WINDOWS = process.platform === 'win32';
 // Python has "scripts" or "bin" directories where command-line tools that come with packages are installed.
 // This is where pip is, along with anything that pip installs.
@@ -2273,29 +2337,6 @@ function usePyPy(majorVersion, architecture) {
     core.setOutput('python-version', impl);
     return { impl: impl, version: versionFromPath(installDir) };
 }
-function installCpython(release) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const downloadUrl = release.files[0].download_url;
-        const pythonPath = yield tc.downloadTool(downloadUrl);
-        const fileName = path.basename(pythonPath, '.zip');
-        const pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
-        const options = {
-            cwd: pythonExtractedFolder,
-            silent: true,
-            listeners: {
-                stdout: (data) => {
-                    core.debug(data.toString());
-                }
-            }
-        };
-        if (IS_WINDOWS) {
-            yield exec.exec('pwsh', ['./setup.ps1'], options);
-        }
-        else {
-            yield exec.exec('sh', ['./setup.sh'], options);
-        }
-    });
-}
 function useCpythonVersion(version, architecture) {
     return __awaiter(this, void 0, void 0, function* () {
         const desugaredVersionSpec = desugarDevVersion(version);
@@ -2303,9 +2344,7 @@ function useCpythonVersion(version, architecture) {
         core.debug(`Semantic version spec of ${version} is ${semanticVersionSpec}`);
         let installDir = tc.find('Python', semanticVersionSpec, architecture);
         if (!installDir) {
-            const manifestUrl = "https://raw.githubusercontent.com/actions/python-versions/master/versions-manifest.json";
-            const manifest = yield toolcache.getManifestFromUrl(manifestUrl);
-            const foundRelease = yield toolcache.findFromManifest(semanticVersionSpec, true, manifest);
+            const foundRelease = yield installer.findReleaseFromManifest(semanticVersionSpec);
             if (!foundRelease) {
                 // Fail and list available versions
                 const x86Versions = tc
@@ -2316,16 +2355,15 @@ function useCpythonVersion(version, architecture) {
                     .findAllVersions('Python', 'x64')
                     .map(s => `${s} (x64)`)
                     .join(os.EOL);
-                const gitHubReleasesUrl = "https://github.com/actions/python-versions/releases";
                 throw new Error([
                     `Version ${version} with arch ${architecture} not found`,
                     'Installed versions:',
                     x86Versions,
                     x64Versions,
-                    `We can also install and setup Python versions that you can find here: ${gitHubReleasesUrl}`
+                    `We can also install and setup Python versions that you can find here: ${GITHUB_RELEASES_URL}`
                 ].join(os.EOL));
             }
-            yield installCpython(foundRelease);
+            yield installer.installCpythonFromRelease(foundRelease);
             installDir = tc.find('Python', semanticVersionSpec, architecture);
         }
         core.exportVariable('pythonLocation', installDir);
@@ -3193,7 +3231,7 @@ exports.findFromManifest = findFromManifest;
 var net = __webpack_require__(631);
 var tls = __webpack_require__(16);
 var http = __webpack_require__(605);
-var https = __webpack_require__(211);
+var https = __webpack_require__(34);
 var events = __webpack_require__(614);
 var assert = __webpack_require__(357);
 var util = __webpack_require__(669);
@@ -3464,7 +3502,7 @@ exports.debug = debug; // for test
 Object.defineProperty(exports, "__esModule", { value: true });
 const url = __webpack_require__(835);
 const http = __webpack_require__(605);
-const https = __webpack_require__(211);
+const https = __webpack_require__(34);
 const pm = __webpack_require__(430);
 let tunnel;
 var HttpCodes;
