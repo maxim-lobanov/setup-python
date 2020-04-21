@@ -1268,7 +1268,7 @@ function installCpythonFromRelease(release) {
             yield exec.exec('pwsh', ['./setup.ps1'], options);
         }
         else {
-            yield exec.exec('bash', ['./setup.sh'], options);
+            yield exec.exec('bash', ['-c', 'sudo ./setup.sh'], options);
         }
     });
 }
