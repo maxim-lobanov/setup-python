@@ -1268,7 +1268,7 @@ function installCpythonFromRelease(release) {
             yield exec.exec('pwsh', ['./setup.ps1'], options);
         }
         else {
-            yield exec.exec('sudo bash', ['./setup.sh'], options);
+            yield exec.exec('bash', ['./setup.sh'], options);
         }
     });
 }
@@ -2345,26 +2345,28 @@ function useCpythonVersion(version, architecture) {
         let installDir = tc.find('Python', semanticVersionSpec, architecture);
         if (!installDir) {
             const foundRelease = yield installer.findReleaseFromManifest(semanticVersionSpec);
-            if (!foundRelease) {
-                // Fail and list available versions
-                const x86Versions = tc
-                    .findAllVersions('Python', 'x86')
-                    .map(s => `${s} (x86)`)
-                    .join(os.EOL);
-                const x64Versions = tc
-                    .findAllVersions('Python', 'x64')
-                    .map(s => `${s} (x64)`)
-                    .join(os.EOL);
-                throw new Error([
-                    `Version ${version} with arch ${architecture} not found`,
-                    'Installed versions:',
-                    x86Versions,
-                    x64Versions,
-                    `We can also install and setup Python versions that you can find here: ${GITHUB_RELEASES_URL}`
-                ].join(os.EOL));
+            if (foundRelease) {
+                yield installer.installCpythonFromRelease(foundRelease);
+                installDir = tc.find('Python', semanticVersionSpec, architecture);
             }
-            yield installer.installCpythonFromRelease(foundRelease);
-            installDir = tc.find('Python', semanticVersionSpec, architecture);
+        }
+        if (!installDir) {
+            // Fail and list available versions
+            const x86Versions = tc
+                .findAllVersions('Python', 'x86')
+                .map(s => `${s} (x86)`)
+                .join(os.EOL);
+            const x64Versions = tc
+                .findAllVersions('Python', 'x64')
+                .map(s => `${s} (x64)`)
+                .join(os.EOL);
+            throw new Error([
+                `Version ${version} with arch ${architecture} not found`,
+                'Installed versions:',
+                x86Versions,
+                x64Versions,
+                `We can also install and setup Python versions that you can find here: ${GITHUB_RELEASES_URL}`
+            ].join(os.EOL));
         }
         core.exportVariable('pythonLocation', installDir);
         core.addPath(installDir);

@@ -103,8 +103,18 @@ async function useCpythonVersion(
   );
   if (!installDir) {
     const foundRelease: toolcache.IToolRelease | undefined = await installer.findReleaseFromManifest(semanticVersionSpec);
+    
+    if (foundRelease) {
+      await installer.installCpythonFromRelease(foundRelease);
       
-    if (!foundRelease) {
+      installDir = tc.find(
+        'Python',
+        semanticVersionSpec,
+        architecture
+        );
+      }
+    }
+    if (!installDir) {
       // Fail and list available versions
       const x86Versions = tc
       .findAllVersions('Python', 'x86')
@@ -127,19 +137,10 @@ async function useCpythonVersion(
         ].join(os.EOL)
       );
     }
-
-    await installer.installCpythonFromRelease(foundRelease);
-
-    installDir = tc.find(
-      'Python',
-      semanticVersionSpec,
-      architecture
-    );
-  }
-
-  core.exportVariable('pythonLocation', installDir);
-  core.addPath(installDir);
-  core.addPath(binDir(installDir));
+    
+    core.exportVariable('pythonLocation', installDir);
+    core.addPath(installDir);
+    core.addPath(binDir(installDir));
 
   if (IS_WINDOWS) {
     // Add --user directory

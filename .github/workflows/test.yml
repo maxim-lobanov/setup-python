@@ -71,23 +71,12 @@ jobs:
 
     - name: Clean machine
       run: |
-        gci env:
-      shell: powershell
-    - name: Clean machine
-
-      run: |
-        which python
-      shell: powershell
-
-    - name: Clean machine
-      run: |
         $PythonFilter = "Name like '%Python%'"
         Get-WmiObject Win32_Product -Filter $PythonFilter | Foreach-Object { 
             Write-Host "Uninstalling $($_.Name) ..."
             $_.Uninstall() | Out-Null 
         }
-        $pythonDir = which python
-        Remove-Item -Path "$pythonDir/Python" -Recurse -Force
+        Remove-Item -Path "$env:RUNNER_TOOL_CACHE/Python" -Recurse -Force
       shell: powershell
 
 
