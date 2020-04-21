@@ -1260,9 +1260,7 @@ function installCpythonFromRelease(release) {
             silent: true,
             listeners: {
                 stdout: (data) => {
-                    if (data) {
-                        core.debug(data.toString());
-                    }
+                    core.debug(data.toString());
                 }
             }
         };
