@@ -25,7 +25,9 @@ export async function installCpythonFromRelease (release: toolcache.IToolRelease
     silent: true,
     listeners: {
       stdout: (data: Buffer) => {
-        core.debug(data.toString());
+        if(data) {
+          core.debug(data.toString());
+        }
       }
     }
   }
