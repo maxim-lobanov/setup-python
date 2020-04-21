@@ -33,6 +33,6 @@ export async function installCpythonFromRelease (release: toolcache.IToolRelease
   if (IS_WINDOWS) {
     await exec.exec('pwsh', ['./setup.ps1'], options);
   } else {
-    await exec.exec('sh', ['./setup.sh'], options);
+    await exec.exec('bash', ['./setup.sh'], options);
   }
 }
