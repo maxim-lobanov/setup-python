@@ -39,11 +39,12 @@ jobs:
       run: python --version
 
   setup-on-clean-machine:
-    name: Setup version on clean machine (2.7.17)
+    name: Setup version on clean machine
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [macos-latest, ubuntu-16.04, ubuntu-18.04]
+        python: [2.7.17, 3.5.4, 3.5.9, 3.6.8, 3.6.10, 3.7.6, 3.8.2]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -53,10 +54,10 @@ jobs:
         Remove-Item -Path "${env:AGENT_TOOLSDIRECTORY}/Python" -Recurse -Force
       shell: pwsh
 
-    - name: setup-python 2.7.17
+    - name: setup-python ${{ matrix.python }}
       uses: ./
       with:
-        python-version: 2.7.17
+        python-version: ${{ matrix.python }}
 
     - name: Validate version
       run: python --version
