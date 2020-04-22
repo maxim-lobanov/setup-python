@@ -5,8 +5,8 @@ import * as exec from '@actions/exec';
 import { ExecOptions } from '@actions/exec/lib/interfaces'
 
 const AUTH_TOKEN = core.getInput('token');
-const OWNER = 'MaksimZhukov';
-const REPO = 'setup-python';
+const OWNER = 'actions';
+const REPO = 'python-versions';
 
 const IS_WINDOWS = process.platform === 'win32';
 const IS_LINUX = process.platform === 'linux';

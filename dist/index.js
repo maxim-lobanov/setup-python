@@ -1137,8 +1137,8 @@ const core = __importStar(__webpack_require__(915));
 const tc = __importStar(__webpack_require__(322));
 const exec = __importStar(__webpack_require__(628));
 const AUTH_TOKEN = core.getInput('token');
-const OWNER = 'MaksimZhukov';
-const REPO = 'setup-python';
+const OWNER = 'actions';
+const REPO = 'python-versions';
 const IS_WINDOWS = process.platform === 'win32';
 const IS_LINUX = process.platform === 'linux';
 function findReleaseFromManifest(semanticVersionSpec) {
