@@ -25,7 +25,6 @@ if (!cacheDirectory) {
 import * as core from '@actions/core';
 import * as tc from '@actions/tool-cache';
 
-const MANIFEST_URL = "https://raw.githubusercontent.com/actions/python-versions/master/versions-manifest.json"
 const IS_WINDOWS = process.platform === 'win32';
 
 // Python has "scripts" or "bin" directories where command-line tools that come with packages are installed.
@@ -118,7 +117,7 @@ async function useCpythonVersion(
     throw new Error(
       [
         `Version ${version} with arch ${architecture} not found`,
-        `The list of all available versions can be found here: ${MANIFEST_URL}`
+        `The list of all available versions can be found here: ${installer.MANIFEST_URL}`
       ].join(os.EOL)
     );
   }

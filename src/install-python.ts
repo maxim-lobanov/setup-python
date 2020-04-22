@@ -5,14 +5,15 @@ import * as exec from '@actions/exec';
 import { ExecOptions } from '@actions/exec/lib/interfaces'
 
 const AUTH_TOKEN = core.getInput('token');
-const OWNER = 'actions';
-const REPO = 'python-versions';
+const MANIFEST_OWNER_REPO = 'actions';
+const MANIFEST_REPO_NAME = 'python-versions';
+export const MANIFEST_URL = `https://raw.githubusercontent.com/${MANIFEST_OWNER_REPO}/${MANIFEST_REPO_NAME}/master/versions-manifest.json`
 
 const IS_WINDOWS = process.platform === 'win32';
 const IS_LINUX = process.platform === 'linux';
 
 export async function findReleaseFromManifest(semanticVersionSpec: string): Promise<tc.IToolRelease | undefined> {
-  const manifest: tc.IToolRelease[] = await tc.getManifestFromRepo(OWNER, REPO, AUTH_TOKEN);
+  const manifest: tc.IToolRelease[] = await tc.getManifestFromRepo(MANIFEST_OWNER_REPO, MANIFEST_REPO_NAME, AUTH_TOKEN);
   return await tc.findFromManifest(semanticVersionSpec, true, manifest);
 }
 

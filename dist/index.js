@@ -1137,13 +1137,14 @@ const core = __importStar(__webpack_require__(915));
 const tc = __importStar(__webpack_require__(322));
 const exec = __importStar(__webpack_require__(628));
 const AUTH_TOKEN = core.getInput('token');
-const OWNER = 'actions';
-const REPO = 'python-versions';
+const MANIFEST_OWNER_REPO = 'actions';
+const MANIFEST_REPO_NAME = 'python-versions';
+exports.MANIFEST_URL = `https://raw.githubusercontent.com/${MANIFEST_OWNER_REPO}/${MANIFEST_REPO_NAME}/master/versions-manifest.json`;
 const IS_WINDOWS = process.platform === 'win32';
 const IS_LINUX = process.platform === 'linux';
 function findReleaseFromManifest(semanticVersionSpec) {
     return __awaiter(this, void 0, void 0, function* () {
-        const manifest = yield tc.getManifestFromRepo(OWNER, REPO, AUTH_TOKEN);
+        const manifest = yield tc.getManifestFromRepo(MANIFEST_OWNER_REPO, MANIFEST_REPO_NAME, AUTH_TOKEN);
         return yield tc.findFromManifest(semanticVersionSpec, true, manifest);
     });
 }
@@ -2231,7 +2232,6 @@ if (!cacheDirectory) {
 }
 const core = __importStar(__webpack_require__(915));
 const tc = __importStar(__webpack_require__(322));
-const MANIFEST_URL = "https://raw.githubusercontent.com/actions/python-versions/master/versions-manifest.json";
 const IS_WINDOWS = process.platform === 'win32';
 // Python has "scripts" or "bin" directories where command-line tools that come with packages are installed.
 // This is where pip is, along with anything that pip installs.
@@ -2299,7 +2299,7 @@ function useCpythonVersion(version, architecture) {
         if (!installDir) {
             throw new Error([
                 `Version ${version} with arch ${architecture} not found`,
-                `The list of all available versions can be found here: ${MANIFEST_URL}`
+                `The list of all available versions can be found here: ${installer.MANIFEST_URL}`
             ].join(os.EOL));
         }
         core.exportVariable('pythonLocation', installDir);
