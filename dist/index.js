@@ -1164,7 +1164,7 @@ function installCpythonFromRelease(release) {
             }
         };
         if (IS_WINDOWS) {
-            yield exec.exec('pwsh', ['./setup.ps1'], options);
+            yield exec.exec('powershell', ['./setup.ps1'], options);
         }
         else if (IS_LINUX) {
             yield exec.exec('bash', ['-c', 'sudo bash ./setup.sh'], options);

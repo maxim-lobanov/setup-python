@@ -12,11 +12,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: List env vars
-      run: |
-        gci env:
-      shell: pwsh
-
     - name: setup-python default
       uses: ./
 
