@@ -35,7 +35,7 @@ export async function installCpythonFromRelease (release: tc.IToolRelease) {
   if (IS_WINDOWS) {
     await exec.exec('powershell', ['./setup.ps1'], options);
   } else if (IS_LINUX) {
-    await exec.exec('bash', ['-c', 'sudo bash ./setup.sh'], options);
+    await exec.exec('sudo', ['bash', './setup.sh'], options);
   } else {
     await exec.exec('bash', ['./setup.sh'], options);
   }
