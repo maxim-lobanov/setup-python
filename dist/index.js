@@ -1152,10 +1152,10 @@ exports.findReleaseFromManifest = findReleaseFromManifest;
 function installCpythonFromRelease(release) {
     return __awaiter(this, void 0, void 0, function* () {
         const downloadUrl = release.files[0].download_url;
-        core.info(`Download Python from "${downloadUrl}"`);
+        core.info(`Download from "${downloadUrl}"`);
         const pythonPath = yield tc.downloadTool(downloadUrl);
         const fileName = path.basename(pythonPath, '.zip');
-        core.info(`Extract archive ${fileName}`);
+        core.info("Extract downloaded archive");
         const pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
         const options = {
             cwd: pythonExtractedFolder,
@@ -2295,7 +2295,7 @@ function useCpythonVersion(version, architecture) {
         if (!installDir) {
             core.info(`Version ${semanticVersionSpec} is not found locally`);
             const foundRelease = yield installer.findReleaseFromManifest(semanticVersionSpec);
-            if (foundRelease) {
+            if (foundRelease && foundRelease.files && foundRelease.files.length > 0) {
                 core.info(`Version ${semanticVersionSpec} is available for downloading`);
                 yield installer.installCpythonFromRelease(foundRelease);
                 installDir = tc.find('Python', semanticVersionSpec, architecture);

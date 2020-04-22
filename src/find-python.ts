@@ -107,7 +107,7 @@ async function useCpythonVersion(
       semanticVersionSpec
     );
 
-    if (foundRelease) {
+    if (foundRelease && foundRelease.files && foundRelease.files.length > 0) {
       core.info(`Version ${semanticVersionSpec} is available for downloading`);
       await installer.installCpythonFromRelease(foundRelease);
 

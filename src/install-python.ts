@@ -26,10 +26,10 @@ export async function findReleaseFromManifest(
 export async function installCpythonFromRelease(release: tc.IToolRelease) {
   const downloadUrl = release.files[0].download_url;
 
-  core.info(`Download Python from "${downloadUrl}"`);
+  core.info(`Download from "${downloadUrl}"`);
   const pythonPath = await tc.downloadTool(downloadUrl);
   const fileName = path.basename(pythonPath, '.zip');
-  core.info(`Extract archive ${fileName}`);
+  core.info("Extract downloaded archive");
   const pythonExtractedFolder = await tc.extractZip(
     pythonPath,
     `./${fileName}`
