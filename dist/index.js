@@ -1155,7 +1155,7 @@ function installCpythonFromRelease(release) {
         core.info(`Download from "${downloadUrl}"`);
         const pythonPath = yield tc.downloadTool(downloadUrl);
         const fileName = path.basename(pythonPath, '.zip');
-        core.info("Extract downloaded archive");
+        core.info('Extract downloaded archive');
         const pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
         const options = {
             cwd: pythonExtractedFolder,
