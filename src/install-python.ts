@@ -1,21 +1,22 @@
-import * as toolcache from './tool-cache';
-
 import * as path from 'path';
 import * as core from '@actions/core';
 import * as tc from '@actions/tool-cache';
 import * as exec from '@actions/exec';
 import { ExecOptions } from '@actions/exec/lib/interfaces'
 
-const MANIFEST_URL = "https://raw.githubusercontent.com/actions/python-versions/master/versions-manifest.json"
+const AUTH_TOKEN = core.getInput('token');
+const OWNER = 'MaksimZhukov';
+const REPO = 'setup-python';
+
 const IS_WINDOWS = process.platform === 'win32';
 const IS_LINUX = process.platform === 'linux';
 
-export async function findReleaseFromManifest(semanticVersionSpec: string): Promise<toolcache.IToolRelease | undefined> {
-  const manifest: toolcache.IToolRelease[] = await toolcache.getManifestFromUrl(MANIFEST_URL);
-  return await toolcache.findFromManifest(semanticVersionSpec, true, manifest);
+export async function findReleaseFromManifest(semanticVersionSpec: string): Promise<tc.IToolRelease | undefined> {
+  const manifest: tc.IToolRelease[] = await tc.getManifestFromRepo(OWNER, REPO, AUTH_TOKEN);
+  return await tc.findFromManifest(semanticVersionSpec, true, manifest);
 }
 
-export async function installCpythonFromRelease (release: toolcache.IToolRelease) {
+export async function installCpythonFromRelease (release: tc.IToolRelease) {
   const downloadUrl = release.files[0].download_url;
   const pythonPath = await tc.downloadTool(downloadUrl);
   const fileName = path.basename(pythonPath, '.zip');

@@ -3,7 +3,6 @@ import * as path from 'path';
 
 import * as semver from 'semver';
 
-import * as toolcache from './tool-cache';
 import * as installer from './install-python';
 
 let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
@@ -102,7 +101,7 @@ async function useCpythonVersion(
     architecture
   );
   if (!installDir) {
-    const foundRelease: toolcache.IToolRelease | undefined = await installer.findReleaseFromManifest(semanticVersionSpec);
+    const foundRelease: tc.IToolRelease | undefined = await installer.findReleaseFromManifest(semanticVersionSpec);
     
     if (foundRelease) {
       await installer.installCpythonFromRelease(foundRelease);
