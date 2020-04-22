@@ -2,27 +2,39 @@ import * as path from 'path';
 import * as core from '@actions/core';
 import * as tc from '@actions/tool-cache';
 import * as exec from '@actions/exec';
-import { ExecOptions } from '@actions/exec/lib/interfaces'
+import {ExecOptions} from '@actions/exec/lib/interfaces';
 
 const AUTH_TOKEN = core.getInput('token');
 const MANIFEST_OWNER_REPO = 'actions';
 const MANIFEST_REPO_NAME = 'python-versions';
-export const MANIFEST_URL = `https://raw.githubusercontent.com/${MANIFEST_OWNER_REPO}/${MANIFEST_REPO_NAME}/master/versions-manifest.json`
+export const MANIFEST_URL = `https://raw.githubusercontent.com/${MANIFEST_OWNER_REPO}/${MANIFEST_REPO_NAME}/master/versions-manifest.json`;
 
 const IS_WINDOWS = process.platform === 'win32';
 const IS_LINUX = process.platform === 'linux';
 
-export async function findReleaseFromManifest(semanticVersionSpec: string): Promise<tc.IToolRelease | undefined> {
-  const manifest: tc.IToolRelease[] = await tc.getManifestFromRepo(MANIFEST_OWNER_REPO, MANIFEST_REPO_NAME, AUTH_TOKEN);
+export async function findReleaseFromManifest(
+  semanticVersionSpec: string
+): Promise<tc.IToolRelease | undefined> {
+  const manifest: tc.IToolRelease[] = await tc.getManifestFromRepo(
+    MANIFEST_OWNER_REPO,
+    MANIFEST_REPO_NAME,
+    AUTH_TOKEN
+  );
   return await tc.findFromManifest(semanticVersionSpec, true, manifest);
 }
 
-export async function installCpythonFromRelease (release: tc.IToolRelease) {
+export async function installCpythonFromRelease(release: tc.IToolRelease) {
   const downloadUrl = release.files[0].download_url;
+
+  core.info(`Download Python from "${downloadUrl}"`);
   const pythonPath = await tc.downloadTool(downloadUrl);
   const fileName = path.basename(pythonPath, '.zip');
-  const pythonExtractedFolder = await tc.extractZip(pythonPath, `./${fileName}`);
-  
+  core.info(`Extract archive ${fileName}`);
+  const pythonExtractedFolder = await tc.extractZip(
+    pythonPath,
+    `./${fileName}`
+  );
+
   const options: ExecOptions = {
     cwd: pythonExtractedFolder,
     silent: true,
@@ -31,8 +43,9 @@ export async function installCpythonFromRelease (release: tc.IToolRelease) {
         core.debug(data.toString().trim());
       }
     }
-  }
-  
+  };
+
+  core.info('Execute installation script');
   if (IS_WINDOWS) {
     await exec.exec('powershell', ['./setup.ps1'], options);
   } else if (IS_LINUX) {

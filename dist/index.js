@@ -1152,8 +1152,10 @@ exports.findReleaseFromManifest = findReleaseFromManifest;
 function installCpythonFromRelease(release) {
     return __awaiter(this, void 0, void 0, function* () {
         const downloadUrl = release.files[0].download_url;
+        core.info(`Download Python from "${downloadUrl}"`);
         const pythonPath = yield tc.downloadTool(downloadUrl);
         const fileName = path.basename(pythonPath, '.zip');
+        core.info(`Extract archive ${fileName}`);
         const pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
         const options = {
             cwd: pythonExtractedFolder,
@@ -1164,6 +1166,7 @@ function installCpythonFromRelease(release) {
                 }
             }
         };
+        core.info('Execute installation script');
         if (IS_WINDOWS) {
             yield exec.exec('powershell', ['./setup.ps1'], options);
         }
@@ -2290,8 +2293,10 @@ function useCpythonVersion(version, architecture) {
         core.debug(`Semantic version spec of ${version} is ${semanticVersionSpec}`);
         let installDir = tc.find('Python', semanticVersionSpec, architecture);
         if (!installDir) {
+            core.info(`Version ${semanticVersionSpec} is not found locally`);
             const foundRelease = yield installer.findReleaseFromManifest(semanticVersionSpec);
             if (foundRelease) {
+                core.info(`Version ${semanticVersionSpec} is available for downloading`);
                 yield installer.installCpythonFromRelease(foundRelease);
                 installDir = tc.find('Python', semanticVersionSpec, architecture);
             }

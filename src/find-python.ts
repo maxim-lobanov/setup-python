@@ -100,20 +100,22 @@ async function useCpythonVersion(
     architecture
   );
   if (!installDir) {
-    const foundRelease: tc.IToolRelease | undefined = await installer.findReleaseFromManifest(semanticVersionSpec);
-    
+    core.info(`Version ${semanticVersionSpec} is not found locally`);
+    const foundRelease:
+      | tc.IToolRelease
+      | undefined = await installer.findReleaseFromManifest(
+      semanticVersionSpec
+    );
+
     if (foundRelease) {
+      core.info(`Version ${semanticVersionSpec} is available for downloading`);
       await installer.installCpythonFromRelease(foundRelease);
-      
-      installDir = tc.find(
-        'Python',
-        semanticVersionSpec,
-        architecture
-        );
-      }
+
+      installDir = tc.find('Python', semanticVersionSpec, architecture);
+    }
   }
 
-  if (!installDir) {    
+  if (!installDir) {
     throw new Error(
       [
         `Version ${version} with arch ${architecture} not found`,
@@ -121,7 +123,7 @@ async function useCpythonVersion(
       ].join(os.EOL)
     );
   }
-    
+
   core.exportVariable('pythonLocation', installDir);
   core.addPath(installDir);
   core.addPath(binDir(installDir));
