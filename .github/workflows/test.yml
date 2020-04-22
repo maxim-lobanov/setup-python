@@ -18,6 +18,9 @@ jobs:
     - name: Validate version
       run: python --version
 
+    - name: Run simple python code
+      run: python __tests__/simple_test.py
+
   all-available-versions:
     name: Setup all available versions
     runs-on: ${{ matrix.os }}
@@ -37,6 +40,9 @@ jobs:
 
     - name: Validate version
       run: python --version
+
+    - name: Run simple python code
+      run: python __tests__/simple_test.py
 
   setup-on-clean-machine:
     name: Setup version on clean machine
@@ -61,6 +67,9 @@ jobs:
 
     - name: Validate version
       run: python --version
+
+    - name: Run simple python code
+      run: python __tests__/simple_test.py
 
   setup-on-clean-machine-win:
     name: Setup version on clean machine
@@ -131,8 +140,6 @@ jobs:
         }
 
         Uninstall-Python -Architecture "x64" -IsMSI $false -MajorVersion 3 -MinorVersion 8
-
-        Remove-Item -Path "$env:RUNNER_TOOL_CACHE/Python" -Recurse -Force
       shell: powershell
 
 
@@ -143,3 +150,6 @@ jobs:
 
     - name: Validate version
       run: python --version
+
+    - name: Run simple python code
+      run: python __tests__/simple_test.py

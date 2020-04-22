@@ -113,34 +113,34 @@ async function useCpythonVersion(
         architecture
         );
       }
-    }
-    if (!installDir) {
-      // Fail and list available versions
-      const x86Versions = tc
-      .findAllVersions('Python', 'x86')
-      .map(s => `${s} (x86)`)
-      .join(os.EOL);
-      
-      const x64Versions = tc
-      .findAllVersions('Python', 'x64')
-      .map(s => `${s} (x64)`)
-      .join(os.EOL);
+  }
 
-      
-      throw new Error(
-        [
-          `Version ${version} with arch ${architecture} not found`,
-          'Installed versions:',
-          x86Versions,
-          x64Versions,
-          `We can also install and setup Python versions that you can find here: ${GITHUB_RELEASES_URL}`
-        ].join(os.EOL)
-      );
-    }
+  if (!installDir) {
+    // Fail and list available versions
+    const x86Versions = tc
+    .findAllVersions('Python', 'x86')
+    .map(s => `${s} (x86)`)
+    .join(os.EOL);
     
-    core.exportVariable('pythonLocation', installDir);
-    core.addPath(installDir);
-    core.addPath(binDir(installDir));
+    const x64Versions = tc
+    .findAllVersions('Python', 'x64')
+    .map(s => `${s} (x64)`)
+    .join(os.EOL);
+    
+    throw new Error(
+      [
+        `Version ${version} with arch ${architecture} not found`,
+        'Installed versions:',
+        x86Versions,
+        x64Versions,
+        `We can also install and setup Python versions that you can find here: ${GITHUB_RELEASES_URL}`
+      ].join(os.EOL)
+    );
+  }
+    
+  core.exportVariable('pythonLocation', installDir);
+  core.addPath(installDir);
+  core.addPath(binDir(installDir));
 
   if (IS_WINDOWS) {
     // Add --user directory
