@@ -28,7 +28,7 @@ describe('Finder tests', () => {
   afterEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
-  })
+  });
 
   it('Finds Python if it is installed', async () => {
     const pythonDir: string = path.join(toolDir, 'Python', '3.0.0', 'x64');
@@ -37,12 +37,18 @@ describe('Finder tests', () => {
     // This will throw if it doesn't find it in the cache and in the manifest (because no such version exists)
     await finder.findPythonVersion('3.x', 'x64');
   });
-  
+
   it('Finds Python if it is not installed, but exists in the manifest', async () => {
-    const findSpy: jest.SpyInstance = jest.spyOn(installer, 'findReleaseFromManifest');
+    const findSpy: jest.SpyInstance = jest.spyOn(
+      installer,
+      'findReleaseFromManifest'
+    );
     findSpy.mockImplementation(() => <tc.IToolRelease>pythonRelease);
-  
-    const installSpy: jest.SpyInstance = jest.spyOn(installer, 'installCpythonFromRelease');
+
+    const installSpy: jest.SpyInstance = jest.spyOn(
+      installer,
+      'installCpythonFromRelease'
+    );
     installSpy.mockImplementation(async () => {
       const pythonDir: string = path.join(toolDir, 'Python', '1.2.3', 'x64');
       await io.mkdirP(pythonDir);
@@ -51,7 +57,7 @@ describe('Finder tests', () => {
     // This will throw if it doesn't find it in the cache and in the manifest (because no such version exists)
     await finder.findPythonVersion('1.2.3', 'x64');
   });
-  
+
   it('Errors if Python is not installed', async () => {
     // This will throw if it doesn't find it in the cache and in the manifest (because no such version exists)
     let thrown = false;

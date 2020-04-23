@@ -19,7 +19,7 @@ jobs:
       run: python --version
 
     - name: Run simple python code
-      run: python __tests__/simple_test.py
+      run: python -c 'import math; print(math.factorial(5))'
 
   all-available-versions:
     name: Setup all available versions
@@ -39,10 +39,16 @@ jobs:
         python-version: ${{ matrix.python }}
 
     - name: Validate version
-      run: python --version
+      run: |
+        $pythonVersion = python --version
+        if ("Python ${{ matrix.python }}" -ne $pythonVersion) {
+          exit 1
+        }
+        $pythonVersion
+      shell: pwsh
 
     - name: Run simple python code
-      run: python __tests__/simple_test.py
+      run: python -c 'import math; print(math.factorial(5))'
 
   setup-on-clean-machine:
     name: Setup version on clean machine
@@ -66,10 +72,16 @@ jobs:
         python-version: ${{ matrix.python }}
 
     - name: Validate version
-      run: python --version
+      run: |
+        $pythonVersion = python --version
+        if ("Python ${{ matrix.python }}" -ne $pythonVersion) {
+          exit 1
+        }
+        $pythonVersion
+      shell: pwsh
 
     - name: Run simple python code
-      run: python __tests__/simple_test.py
+      run: python -c 'import math; print(math.factorial(5))'
 
   setup-on-clean-machine-win:
     name: Setup version on clean machine
@@ -141,7 +153,7 @@ jobs:
 
         Uninstall-Python -Architecture "x64" -IsMSI $false -MajorVersion 3 -MinorVersion 8
 
-        Remove-Item -Path "${env:AGENT_TOOLSDIRECTORY}/Python/3.8.2" -Recurse -Force
+        Remove-Item -Path "${env:RUNNER_TOOL_CACHE}/Python/3.8.2" -Recurse -Force
       shell: powershell
 
 
@@ -151,7 +163,13 @@ jobs:
         python-version: ${{ matrix.python }}
 
     - name: Validate version
-      run: python --version
+      run: |
+        $pythonVersion = python --version
+        if ("Python ${{ matrix.python }}" -ne $pythonVersion) {
+          exit 1
+        }
+        $pythonVersion
+      shell: pwsh
 
     - name: Run simple python code
-      run: python __tests__/simple_test.py
+      run: python -c 'import math; print(math.factorial(5))'
