@@ -140,6 +140,8 @@ jobs:
         }
 
         Uninstall-Python -Architecture "x64" -IsMSI $false -MajorVersion 3 -MinorVersion 8
+
+        Remove-Item -Path "${env:AGENT_TOOLSDIRECTORY}/Python/3.8.2" -Recurse -Force
       shell: powershell
 
 

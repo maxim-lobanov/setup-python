@@ -2293,7 +2293,7 @@ function useCpythonVersion(version, architecture) {
         core.debug(`Semantic version spec of ${version} is ${semanticVersionSpec}`);
         let installDir = tc.find('Python', semanticVersionSpec, architecture);
         if (!installDir) {
-            core.info(`Version ${semanticVersionSpec} is not found locally`);
+            core.info(`Version ${semanticVersionSpec} is not found in local cache`);
             const foundRelease = yield installer.findReleaseFromManifest(semanticVersionSpec);
             if (foundRelease && foundRelease.files && foundRelease.files.length > 0) {
                 core.info(`Version ${semanticVersionSpec} is available for downloading`);
