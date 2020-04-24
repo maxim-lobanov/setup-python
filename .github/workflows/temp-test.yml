@@ -39,8 +39,7 @@ jobs:
         python-version: ${{ matrix.python }}
 
     - name: Validate version
-      run: |
-        python --version
+      run: python --version
       shell: pwsh
 
     - name: Run simple python code
