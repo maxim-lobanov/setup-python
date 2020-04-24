@@ -1,85 +1,28 @@
 name: Temporary test
-on: [push, pull_request]
+on: [push]
 
 jobs:
-  default-version:
-    name: Setup latest version
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+  # default-version:
+  #   name: Setup latest version
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v2
 
-    - name: setup-python default
-      uses: ./
+  #   - name: setup-python default
+  #     uses: ./
 
-    - name: Validate version
-      run: python --version
+  #   - name: Validate version
+  #     run: python --version
 
-    - name: Run simple python code
-      run: python -c 'import math; print(math.factorial(5))'
+  #   - name: Run simple python code
+  #     run: python -c 'import math; print(math.factorial(5))'
 
   all-available-versions:
-    name: Setup ${{ matrix.python }} ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
-        python: [2.7.17, 2.7.18, 3.5.3, 3.5.4, 3.5.9, 3.6.4, 3.6.6, 3.6.7, 3.6.8, 3.6.10, 3.7.3, 3.7.4, 3.7.5, 3.7.6, 3.7.7, 3.8.0, 3.8.1, 3.8.2]
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: setup-python ${{ matrix.python }}
-      uses: ./
-      if: "!( matrix.os == 'windows-latest' && (matrix.python == '3.5.9' || matrix.python == '3.6.10') )"
-      with:
-        python-version: ${{ matrix.python }}
-
-    - name: Validate version
-      if: "!( matrix.os == 'windows-latest' && (matrix.python == '3.5.9' || matrix.python == '3.6.10') )"
-      run: |
-        python --version
-      shell: pwsh
-
-    - name: Run simple python code
-      run: python -c 'import math; print(math.factorial(5))'
-
-  setup-on-clean-machine:
-    name: Setup ${{ matrix.python }} ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-latest, ubuntu-16.04, ubuntu-18.04]
-        python: [2.7.17, 2.7.18, 3.5.3, 3.5.4, 3.5.9, 3.6.4, 3.6.6, 3.6.7, 3.6.8, 3.6.10, 3.7.3, 3.7.4, 3.7.5, 3.7.6, 3.7.7, 3.8.0, 3.8.1, 3.8.2]
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Clean machine
-      run: |
-        Remove-Item -Path "${env:AGENT_TOOLSDIRECTORY}/Python" -Recurse -Force
-      shell: pwsh
-
-    - name: setup-python ${{ matrix.python }}
-      uses: ./
-      with:
-        python-version: ${{ matrix.python }}
-
-    - name: Validate version
-      run: |
-        python --version
-      shell: pwsh
-
-    - name: Run simple python code
-      run: python -c 'import math; print(math.factorial(5))'
-
-  setup-on-clean-machine-win:
     name: Setup ${{ matrix.python }} windows-latest
     runs-on: windows-latest
     strategy:
@@ -90,12 +33,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Clean machine
-      run: |
-        Remove-Item -Path "${env:RUNNER_TOOL_CACHE}/Python" -Recurse -Force
-      shell: powershell
-
-
     - name: setup-python ${{ matrix.python }}
       uses: ./
       with:
@@ -108,3 +45,63 @@ jobs:
 
     - name: Run simple python code
       run: python -c 'import math; print(math.factorial(5))'
+
+  # setup-on-clean-machine:
+  #   name: Setup ${{ matrix.python }} ${{ matrix.os }}
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os: [macos-latest, ubuntu-16.04, ubuntu-18.04]
+  #       python: [2.7.17, 2.7.18, 3.5.3, 3.5.4, 3.5.9, 3.6.4, 3.6.6, 3.6.7, 3.6.8, 3.6.10, 3.7.3, 3.7.4, 3.7.5, 3.7.6, 3.7.7, 3.8.0, 3.8.1, 3.8.2]
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v2
+
+  #   - name: Clean machine
+  #     run: |
+  #       Remove-Item -Path "${env:AGENT_TOOLSDIRECTORY}/Python" -Recurse -Force
+  #     shell: pwsh
+
+  #   - name: setup-python ${{ matrix.python }}
+  #     uses: ./
+  #     with:
+  #       python-version: ${{ matrix.python }}
+
+  #   - name: Validate version
+  #     run: |
+  #       python --version
+  #     shell: pwsh
+
+  #   - name: Run simple python code
+  #     run: python -c 'import math; print(math.factorial(5))'
+
+  # setup-on-clean-machine-win:
+  #   name: Setup ${{ matrix.python }} windows-latest
+  #   runs-on: windows-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       python: [2.7.17, 2.7.18, 3.5.3, 3.5.4, 3.6.4, 3.6.6, 3.6.7, 3.6.8, 3.7.3, 3.7.4, 3.7.5, 3.7.6, 3.7.7, 3.8.0, 3.8.1, 3.8.2]
+  #   steps:
+  #   - name: Checkout
+  #     uses: actions/checkout@v2
+
+  #   - name: Clean machine
+  #     run: |
+  #       Remove-Item -Path "${env:RUNNER_TOOL_CACHE}/Python" -Recurse -Force
+  #     shell: powershell
+
+
+  #   - name: setup-python ${{ matrix.python }}
+  #     uses: ./
+  #     with:
+  #       python-version: ${{ matrix.python }}
+
+  #   - name: Validate version
+  #     run: |
+  #       python --version
+  #     shell: pwsh
+
+  #   - name: Run simple python code
+  #     run: python -c 'import math; print(math.factorial(5))'
