@@ -5,9 +5,9 @@ import * as exec from '@actions/exec';
 import {ExecOptions} from '@actions/exec/lib/interfaces';
 
 const AUTH_TOKEN = core.getInput('token');
-const MANIFEST_OWNER_REPO = 'actions';
+const MANIFEST_REPO_OWNER = 'actions';
 const MANIFEST_REPO_NAME = 'python-versions';
-export const MANIFEST_URL = `https://raw.githubusercontent.com/${MANIFEST_OWNER_REPO}/${MANIFEST_REPO_NAME}/master/versions-manifest.json`;
+export const MANIFEST_URL = `https://raw.githubusercontent.com/${MANIFEST_REPO_OWNER}/${MANIFEST_REPO_NAME}/master/versions-manifest.json`;
 
 const IS_WINDOWS = process.platform === 'win32';
 const IS_LINUX = process.platform === 'linux';
@@ -16,7 +16,7 @@ export async function findReleaseFromManifest(
   semanticVersionSpec: string
 ): Promise<tc.IToolRelease | undefined> {
   const manifest: tc.IToolRelease[] = await tc.getManifestFromRepo(
-    MANIFEST_OWNER_REPO,
+    MANIFEST_REPO_OWNER,
     MANIFEST_REPO_NAME,
     AUTH_TOKEN
   );
