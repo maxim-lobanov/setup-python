@@ -31,7 +31,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
-        python: [3.7.4, 3.7.5]
+        python: [2.7.18, 3.5.3, 3.6.4, 3.6.6, 3.6.7, 3.7.3, 3.7.4, 3.7.5, 3.7.7, 3.8.0, 3.8.1]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -45,7 +45,7 @@ jobs:
       run: |
         $pythonVersion = python --version
         if ("Python ${{ matrix.python }}" -ne $pythonVersion) {
-          Write-Host "Used $pythonVersion is incorrect"
+          Write-Host "Used $pythonVersion is incorrect version"
           exit 1
         }
         $pythonVersion

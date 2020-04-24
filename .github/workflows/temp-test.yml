@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
-        python: [2.7.17, 3.5.4, 3.5.9, 3.6.8, 3.6.10, 3.7.4, 3.7.5, 3.7.6, 3.8.2]
+        python: [2.7.17, 2.7.18, 3.5.3, 3.5.4, 3.5.9, 3.6.4, 3.6.6, 3.6.7, 3.6.8, 3.6.10, 3.7.3, 3.7.4, 3.7.5, 3.7.6, 3.7.7, 3.8.0, 3.8.1, 3.8.2]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -43,7 +43,7 @@ jobs:
       run: |
         $pythonVersion = python --version
         if ("Python ${{ matrix.python }}" -ne $pythonVersion) {
-          Write-Host "Used $pythonVersion is incorrect"
+          Write-Host "Used $pythonVersion is incorrect version"
           exit 1
         }
         $pythonVersion
@@ -58,7 +58,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-16.04, ubuntu-18.04]
-        python: [2.7.17, 3.5.4, 3.5.9, 3.6.8, 3.6.10, 3.7.6, 3.8.2]
+        python: [2.7.17, 2.7.18, 3.5.3, 3.5.4, 3.5.9, 3.6.4, 3.6.6, 3.6.7, 3.6.8, 3.6.10, 3.7.3, 3.7.4, 3.7.5, 3.7.6, 3.7.7, 3.8.0, 3.8.1, 3.8.2]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -77,7 +77,7 @@ jobs:
       run: |
         $pythonVersion = python --version
         if ("Python ${{ matrix.python }}" -ne $pythonVersion) {
-          Write-Host "Used $pythonVersion is incorrect"
+          Write-Host "Used $pythonVersion is incorrect version"
           exit 1
         }
         $pythonVersion
@@ -91,71 +91,13 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python: [2.7.17, 3.5.4, 3.6.8, 3.7.6, 3.8.2]
+        python: [2.7.17, 2.7.18, 3.5.3, 3.5.4, 3.6.4, 3.6.6, 3.6.7, 3.6.8, 3.7.3, 3.7.4, 3.7.5, 3.7.6, 3.7.7, 3.8.0, 3.8.1, 3.8.2]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
     - name: Clean machine
       run: |
-        function Get-ArchitectureFilter {
-            param(
-                [Parameter (Mandatory = $true)]
-                [String]$Architecture
-            )
-
-            if ($Architecture -eq 'x86') {
-                "32-bit"
-            } else {
-                "64-bit"
-            }
-        }
-
-        function Get-PythonFilter {
-            param(
-                [Parameter (Mandatory = $true)]
-                [String]$ArchFilter,
-                [Parameter (Mandatory = $true)]
-                [String]$Architecture,
-                [Parameter (Mandatory = $true)]
-                [Boolean]$IsMSI,
-                [Parameter (Mandatory = $true)]
-                [Int32]$MajorVersion,
-                [Parameter (Mandatory = $true)]
-                [Int32]$MinorVersion
-            )
-
-            ### Python 2.7 have no architecture postfix
-            if ($IsMSI -and $Architecture -eq "x86") {
-                "(Name like '%Python%%$MajorVersion.$MinorVersion%') and (not (Name like '%64-bit%'))"
-            } else {
-                "Name like '%Python%%$MajorVersion.$MinorVersion%%$ArchFilter%'"
-            }
-        }
-
-        function Uninstall-Python {
-            param(
-                [Parameter (Mandatory = $true)]
-                [String]$Architecture,
-                [Parameter (Mandatory = $true)]
-                [Boolean]$IsMSI,
-                [Parameter (Mandatory = $true)]
-                [Int32]$MajorVersion,
-                [Parameter (Mandatory = $true)]
-                [Int32]$MinorVersion
-            )
-
-            $ArchFilter = Get-ArchitectureFilter -Architecture $Architecture
-            Write-Host "Check for installed Python$MajorVersion.$MinorVersion $ArchFilter WMI..."
-            $PythonFilter = Get-PythonFilter -ArchFilter $ArchFilter -Architecture $Architecture -IsMSI $IsMSI -MajorVersion $MajorVersion -MinorVersion $MinorVersion
-            Get-WmiObject Win32_Product -Filter $PythonFilter | Foreach-Object { 
-                Write-Host "Uninstalling $($_.Name) ..."
-                $_.Uninstall() | Out-Null 
-            }
-        }
-
-        Uninstall-Python -Architecture "x64" -IsMSI $false -MajorVersion 3 -MinorVersion 8
-
         Remove-Item -Path "${env:RUNNER_TOOL_CACHE}/Python/3.8.2" -Recurse -Force
       shell: powershell
 
@@ -169,7 +111,7 @@ jobs:
       run: |
         $pythonVersion = python --version
         if ("Python ${{ matrix.python }}" -ne $pythonVersion) {
-          Write-Host "Used $pythonVersion is incorrect"
+          Write-Host "Used $pythonVersion is incorrect version"
           exit 1
         }
         $pythonVersion
