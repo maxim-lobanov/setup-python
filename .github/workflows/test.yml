@@ -43,12 +43,7 @@ jobs:
 
     - name: Validate version
       run: |
-        $pythonVersion = (python --version)
-        if ("Python ${{ matrix.python }}" -ne "$pythonVersion") {
-          Write-Host "Used $pythonVersion is incorrect version"
-          exit 1
-        }
-        $pythonVersion
+        python --version
       shell: pwsh
 
     - name: Run simple Python code

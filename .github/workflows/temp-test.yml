@@ -41,12 +41,7 @@ jobs:
     - name: Validate version
       if: "!( matrix.os == 'windows-latest' && (matrix.python == '3.5.9' || matrix.python == '3.6.10') )"
       run: |
-        $pythonVersion = (python --version)
-        if ("Python ${{ matrix.python }}" -ne "$pythonVersion") {
-          Write-Host "Used $pythonVersion is incorrect version"
-          exit 1
-        }
-        $pythonVersion
+        python --version
       shell: pwsh
 
     - name: Run simple python code
@@ -75,12 +70,7 @@ jobs:
 
     - name: Validate version
       run: |
-        $pythonVersion = (python --version)
-        if ("Python ${{ matrix.python }}" -ne "$pythonVersion") {
-          Write-Host "Used $pythonVersion is incorrect version"
-          exit 1
-        }
-        $pythonVersion
+        python --version
       shell: pwsh
 
     - name: Run simple python code
@@ -109,12 +99,7 @@ jobs:
 
     - name: Validate version
       run: |
-        $pythonVersion = (python --version)
-        if ("Python ${{ matrix.python }}" -ne "$pythonVersion") {
-          Write-Host "Used $pythonVersion is incorrect version"
-          exit 1
-        }
-        $pythonVersion
+        python --version
       shell: pwsh
 
     - name: Run simple python code
