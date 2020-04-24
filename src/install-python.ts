@@ -27,7 +27,7 @@ export async function installCpythonFromRelease(release: tc.IToolRelease) {
   const downloadUrl = release.files[0].download_url;
 
   core.info(`Download from "${downloadUrl}"`);
-  const pythonPath = await tc.downloadTool(downloadUrl);
+  const pythonPath = await tc.downloadTool(downloadUrl, undefined, AUTH_TOKEN);
   const fileName = path.basename(pythonPath, '.zip');
   core.info('Extract downloaded archive');
   let pythonExtractedFolder;
