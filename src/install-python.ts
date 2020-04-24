@@ -13,14 +13,20 @@ const IS_WINDOWS = process.platform === 'win32';
 const IS_LINUX = process.platform === 'linux';
 
 export async function findReleaseFromManifest(
-  semanticVersionSpec: string
+  semanticVersionSpec: string,
+  architecture: string
 ): Promise<tc.IToolRelease | undefined> {
   const manifest: tc.IToolRelease[] = await tc.getManifestFromRepo(
     MANIFEST_REPO_OWNER,
     MANIFEST_REPO_NAME,
     AUTH_TOKEN
   );
-  return await tc.findFromManifest(semanticVersionSpec, true, manifest);
+  return await tc.findFromManifest(
+    semanticVersionSpec,
+    true,
+    manifest,
+    architecture
+  );
 }
 
 export async function installCpythonFromRelease(release: tc.IToolRelease) {

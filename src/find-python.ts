@@ -102,7 +102,8 @@ async function useCpythonVersion(
   if (!installDir) {
     core.info(`Version ${semanticVersionSpec} is not found in local cache`);
     const foundRelease = await installer.findReleaseFromManifest(
-      semanticVersionSpec
+      semanticVersionSpec,
+      architecture
     );
 
     if (foundRelease && foundRelease.files && foundRelease.files.length > 0) {

@@ -1142,10 +1142,10 @@ const MANIFEST_REPO_NAME = 'python-versions';
 exports.MANIFEST_URL = `https://raw.githubusercontent.com/${MANIFEST_REPO_OWNER}/${MANIFEST_REPO_NAME}/master/versions-manifest.json`;
 const IS_WINDOWS = process.platform === 'win32';
 const IS_LINUX = process.platform === 'linux';
-function findReleaseFromManifest(semanticVersionSpec) {
+function findReleaseFromManifest(semanticVersionSpec, architecture) {
     return __awaiter(this, void 0, void 0, function* () {
         const manifest = yield tc.getManifestFromRepo(MANIFEST_REPO_OWNER, MANIFEST_REPO_NAME, AUTH_TOKEN);
-        return yield tc.findFromManifest(semanticVersionSpec, true, manifest);
+        return yield tc.findFromManifest(semanticVersionSpec, true, manifest, architecture);
     });
 }
 exports.findReleaseFromManifest = findReleaseFromManifest;
@@ -2306,7 +2306,7 @@ function useCpythonVersion(version, architecture) {
         let installDir = tc.find('Python', semanticVersionSpec, architecture);
         if (!installDir) {
             core.info(`Version ${semanticVersionSpec} is not found in local cache`);
-            const foundRelease = yield installer.findReleaseFromManifest(semanticVersionSpec);
+            const foundRelease = yield installer.findReleaseFromManifest(semanticVersionSpec, architecture);
             if (foundRelease && foundRelease.files && foundRelease.files.length > 0) {
                 core.info(`Version ${semanticVersionSpec} is available for downloading`);
                 yield installer.installCpythonFromRelease(foundRelease);
