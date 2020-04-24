@@ -88,7 +88,7 @@ jobs:
 
     - name: Clean machine
       run: |
-        Remove-Item -Path "${env:RUNNER_TOOL_CACHE}/Python" -Recurse -Force
+        Remove-Item -Path "${env:RUNNER_TOOL_CACHE}/Python/*" -Recurse -Force
       shell: powershell
 
 
