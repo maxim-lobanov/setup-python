@@ -23,7 +23,7 @@ jobs:
   #     run: python -c 'import math; print(math.factorial(5))'
 
   all-available-versions:
-    name: Setup ${{ matrix.python }} windows-latest
+    name: Setup ${{ matrix.python }} windows
     runs-on: windows-latest
     strategy:
       fail-fast: false
