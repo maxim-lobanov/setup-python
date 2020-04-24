@@ -22,7 +22,7 @@ jobs:
       run: python -c 'import math; print(math.factorial(5))'
 
   all-available-versions:
-    name: Setup all available versions
+    name: Setup ${{ matrix.python }} ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -39,9 +39,11 @@ jobs:
         python-version: ${{ matrix.python }}
 
     - name: Validate version
+      if: "!( matrix.os == 'windows-latest' && (matrix.python == '3.5.9' || matrix.python == '3.6.10') )"
       run: |
         $pythonVersion = python --version
         if ("Python ${{ matrix.python }}" -ne $pythonVersion) {
+          Write-Host "Used $pythonVersion is incorrect"
           exit 1
         }
         $pythonVersion
@@ -51,7 +53,7 @@ jobs:
       run: python -c 'import math; print(math.factorial(5))'
 
   setup-on-clean-machine:
-    name: Setup version on clean machine
+    name: Setup ${{ matrix.python }} ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -75,6 +77,7 @@ jobs:
       run: |
         $pythonVersion = python --version
         if ("Python ${{ matrix.python }}" -ne $pythonVersion) {
+          Write-Host "Used $pythonVersion is incorrect"
           exit 1
         }
         $pythonVersion
@@ -84,7 +87,7 @@ jobs:
       run: python -c 'import math; print(math.factorial(5))'
 
   setup-on-clean-machine-win:
-    name: Setup version on clean machine
+    name: Setup ${{ matrix.python }} windows-latest
     runs-on: windows-latest
     strategy:
       matrix:
@@ -166,6 +169,7 @@ jobs:
       run: |
         $pythonVersion = python --version
         if ("Python ${{ matrix.python }}" -ne $pythonVersion) {
+          Write-Host "Used $pythonVersion is incorrect"
           exit 1
         }
         $pythonVersion
