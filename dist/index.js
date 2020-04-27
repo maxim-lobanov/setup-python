@@ -1167,7 +1167,7 @@ function installPython(workingDirectory) {
             yield exec.exec('bash', ['./setup.sh'], options);
         }
         else {
-            yield exec.exec('sudo', ['-n', 'bash', './setup.sh'], options);
+            yield exec.exec('bash', ['./setup.sh'], options);
         }
     });
 }
