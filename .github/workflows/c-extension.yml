@@ -30,7 +30,7 @@ jobs:
         sudo chown $USER:runneradmin -R /opt/hostedtoolcache/Python
         ls -lah /opt/hostedtoolcache/Python
         getfacl /opt/hostedtoolcache/Python/${{ matrix.python }}
-        ls -lah /opt/hostedtoolcache/Python/${{ matrix.python }}
+        ls -lah /opt/hostedtoolcache/Python/${{ matrix.python }}/x64
 
     - name: Install dependencies
       run: |
