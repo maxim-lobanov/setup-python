@@ -24,8 +24,10 @@ jobs:
 
     - name: New step
       run: |
+        ls -lah /opt/hostedtoolcache/Python
         sudo chmod 777 -R /opt/hostedtoolcache/Python
         sudo chown $USER -R /opt/hostedtoolcache/Python
+        ls -lah /opt/hostedtoolcache/Python
 
     - name: Install dependencies
       run: |
