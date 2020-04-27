@@ -1,4 +1,4 @@
-name: Validate 'setup-python'
+name: New tests
 on: 
   push:
 
@@ -17,6 +17,7 @@ jobs:
 
     - name: setup default python 
       uses: ./
+      with:
         python-version: ${{ matrix.python }}
 
     - name: Install Tox
