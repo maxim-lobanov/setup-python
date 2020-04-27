@@ -27,11 +27,6 @@ jobs:
       working-directory: 'applications/c-extension/'
 
     - name: Make
-      run: |
-        if ('${{ matrix.os }}' -match 'ubuntu') {
-          sudo make
-        } else {
-          make
-        }
+      run: make
       working-directory: 'applications/c-extension/'
       shell: pwsh
