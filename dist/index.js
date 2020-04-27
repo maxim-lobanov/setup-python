@@ -1183,7 +1183,6 @@ function installCpythonFromRelease(release) {
             pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
         }
         else {
-            console.log(process.platform);
             pythonExtractedFolder = yield tc.extractTar(pythonPath, `./${fileName}`);
         }
         core.info('Execute installation script');
@@ -2235,23 +2234,6 @@ const os = __importStar(__webpack_require__(87));
 const path = __importStar(__webpack_require__(622));
 const semver = __importStar(__webpack_require__(3));
 const installer = __importStar(__webpack_require__(211));
-let cacheDirectory = process.env['RUNNER_TOOLSDIRECTORY'] || '';
-if (!cacheDirectory) {
-    let baseLocation;
-    if (process.platform === 'win32') {
-        // On windows use the USERPROFILE env variable
-        baseLocation = process.env['USERPROFILE'] || 'C:\\';
-    }
-    else {
-        if (process.platform === 'darwin') {
-            baseLocation = '/Users';
-        }
-        else {
-            baseLocation = '/home';
-        }
-    }
-    cacheDirectory = path.join(baseLocation, 'actions', 'cache');
-}
 const core = __importStar(__webpack_require__(915));
 const tc = __importStar(__webpack_require__(322));
 const IS_WINDOWS = process.platform === 'win32';

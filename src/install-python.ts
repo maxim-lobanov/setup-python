@@ -60,7 +60,6 @@ export async function installCpythonFromRelease(release: tc.IToolRelease) {
   if (IS_WINDOWS) {
     pythonExtractedFolder = await tc.extractZip(pythonPath, `./${fileName}`);
   } else {
-    console.log(process.platform);
     pythonExtractedFolder = await tc.extractTar(pythonPath, `./${fileName}`);
   }
 
