@@ -28,7 +28,7 @@ jobs:
 
     - name: Make
       run: |
-        if ('${{ matrix.os }}'' -match 'ubuntu') {
+        if ('${{ matrix.os }}' -match 'ubuntu') {
           sudo make
         } else {
           make
