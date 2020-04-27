@@ -1149,7 +1149,7 @@ function findReleaseFromManifest(semanticVersionSpec, architecture) {
     });
 }
 exports.findReleaseFromManifest = findReleaseFromManifest;
-function _installPython(workingDirectory) {
+function installPython(workingDirectory) {
     return __awaiter(this, void 0, void 0, function* () {
         const options = {
             cwd: workingDirectory,
@@ -1186,7 +1186,7 @@ function installCpythonFromRelease(release) {
             pythonExtractedFolder = yield tc.extractTar(pythonPath, `./${fileName}`);
         }
         core.info('Execute installation script');
-        yield _installPython(pythonExtractedFolder);
+        yield installPython(pythonExtractedFolder);
     });
 }
 exports.installCpythonFromRelease = installCpythonFromRelease;
