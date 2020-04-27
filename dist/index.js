@@ -1177,7 +1177,7 @@ function installCpythonFromRelease(release) {
             yield exec.exec('powershell', ['./setup.ps1'], options);
         }
         else if (IS_LINUX) {
-            yield exec.exec('sudo', ['bash', './setup.sh'], options);
+            yield exec.exec('sudo', ['-n', 'bash', './setup.sh'], options);
         }
         else {
             yield exec.exec('bash', ['./setup.sh'], options);
@@ -1613,12 +1613,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(915));
 const finder = __importStar(__webpack_require__(338));
 const path = __importStar(__webpack_require__(622));
+const os = __importStar(__webpack_require__(87));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let version = core.getInput('python-version');
             if (version) {
-                const arch = core.getInput('architecture', { required: true });
+                const arch = core.getInput('architecture') || os.arch();
                 const installed = yield finder.findPythonVersion(version, arch);
                 core.info(`Successfully setup ${installed.impl} (${installed.version})`);
             }
