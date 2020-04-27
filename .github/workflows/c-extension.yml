@@ -22,15 +22,9 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
 
-    # - name: New step
-    #   run: |
-    #     ls -lah /opt/hostedtoolcache/Python
-    #     getfacl /opt/hostedtoolcache/Python/${{ matrix.python }}
-    #     sudo chmod 777 -R /opt/hostedtoolcache/Python
-    #     sudo chown $USER:runneradmin -R /opt/hostedtoolcache/Python
-    #     ls -lah /opt/hostedtoolcache/Python
-    #     getfacl /opt/hostedtoolcache/Python/${{ matrix.python }}
-    #     ls -lah /opt/hostedtoolcache/Python/${{ matrix.python }}/x64
+    - name: New step
+      run: |
+        sudo chown $USER:runneradmin -R /opt/hostedtoolcache/Python
 
     - name: Install dependencies
       run: |
