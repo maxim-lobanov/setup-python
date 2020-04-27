@@ -1149,6 +1149,28 @@ function findReleaseFromManifest(semanticVersionSpec, architecture) {
     });
 }
 exports.findReleaseFromManifest = findReleaseFromManifest;
+function _installPython(workingDirectory) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const options = {
+            cwd: workingDirectory,
+            silent: true,
+            listeners: {
+                stdout: (data) => {
+                    core.debug(data.toString().trim());
+                }
+            }
+        };
+        if (IS_WINDOWS) {
+            yield exec.exec('powershell', ['./setup.ps1'], options);
+        }
+        else if (IS_LINUX) {
+            yield exec.exec('sudo', ['-n', 'bash', './setup.sh'], options);
+        }
+        else {
+            yield exec.exec('bash', ['./setup.sh'], options);
+        }
+    });
+}
 function installCpythonFromRelease(release) {
     return __awaiter(this, void 0, void 0, function* () {
         const downloadUrl = release.files[0].download_url;
@@ -1161,27 +1183,11 @@ function installCpythonFromRelease(release) {
             pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
         }
         else {
+            console.log(process.platform);
             pythonExtractedFolder = yield tc.extractTar(pythonPath, `./${fileName}`);
         }
-        const options = {
-            cwd: pythonExtractedFolder,
-            silent: true,
-            listeners: {
-                stdout: (data) => {
-                    core.debug(data.toString().trim());
-                }
-            }
-        };
         core.info('Execute installation script');
-        if (IS_WINDOWS) {
-            yield exec.exec('powershell', ['./setup.ps1'], options);
-        }
-        else if (IS_LINUX) {
-            yield exec.exec('sudo', ['-n', 'bash', './setup.sh'], options);
-        }
-        else {
-            yield exec.exec('bash', ['./setup.sh'], options);
-        }
+        _installPython(pythonExtractedFolder);
     });
 }
 exports.installCpythonFromRelease = installCpythonFromRelease;

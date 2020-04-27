@@ -29,6 +29,26 @@ export async function findReleaseFromManifest(
   );
 }
 
+async function _installPython(workingDirectory: string) {
+  const options: ExecOptions = {
+    cwd: workingDirectory,
+    silent: true,
+    listeners: {
+      stdout: (data: Buffer) => {
+        core.debug(data.toString().trim());
+      }
+    }
+  };
+
+  if (IS_WINDOWS) {
+    await exec.exec('powershell', ['./setup.ps1'], options);
+  } else if (IS_LINUX) {
+    await exec.exec('sudo', ['-n', 'bash', './setup.sh'], options);
+  } else {
+    await exec.exec('bash', ['./setup.sh'], options);
+  }
+}
+
 export async function installCpythonFromRelease(release: tc.IToolRelease) {
   const downloadUrl = release.files[0].download_url;
 
@@ -40,25 +60,10 @@ export async function installCpythonFromRelease(release: tc.IToolRelease) {
   if (IS_WINDOWS) {
     pythonExtractedFolder = await tc.extractZip(pythonPath, `./${fileName}`);
   } else {
+    console.log(process.platform);
     pythonExtractedFolder = await tc.extractTar(pythonPath, `./${fileName}`);
   }
 
-  const options: ExecOptions = {
-    cwd: pythonExtractedFolder,
-    silent: true,
-    listeners: {
-      stdout: (data: Buffer) => {
-        core.debug(data.toString().trim());
-      }
-    }
-  };
-
   core.info('Execute installation script');
-  if (IS_WINDOWS) {
-    await exec.exec('powershell', ['./setup.ps1'], options);
-  } else if (IS_LINUX) {
-    await exec.exec('sudo', ['-n', 'bash', './setup.sh'], options);
-  } else {
-    await exec.exec('bash', ['./setup.sh'], options);
-  }
+  _installPython(pythonExtractedFolder);
 }
