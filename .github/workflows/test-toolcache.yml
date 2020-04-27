@@ -1,42 +1,79 @@
-# name: Toolcache
-# on: 
-#   push:
+name: Toolcache
+on: 
+  push:
 
-# jobs:
-#   default-version:
-#     name: Setup default version
-#     runs-on: ${{ matrix.os }}
-#     strategy:
-#       fail-fast: false
-#       matrix:
-#         os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
-#         python: [2.7.17, 2.7.18, 3.5.3, 3.5.4, 3.6.6, 3.6.8, 3.7.4, 3.7.6, 3.8.1, 3.8.2]
-#     steps:
-#     - name: Checkout
-#       uses: actions/checkout@v2
+jobs:
+  UNIX:
+    name: ${{ matrix.os }} ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-16.04, ubuntu-18.04]
+        # python: [2.7.17, 2.7.18, 3.5.3, 3.5.4, 3.6.6, 3.6.8, 3.7.4, 3.7.6, 3.8.1, 3.8.2]
+        python: [2.7.17, 3.5.9, 3.6.10, 3.7.6, 3.8.2]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
 
-#     - name: setup default python 
-#       uses: ./
-#       with:
-#         python-version: ${{ matrix.python }}
+    - name: setup default python 
+      uses: ./
+      with:
+        python-version: ${{ matrix.python }}
 
-#     - name: Install Tox
-#       run: pip install --upgrade setuptools tox
-#       shell: bash
+    - name: Install Tox
+      run: pip install --upgrade setuptools tox
+      shell: bash
 
-#     - name: Tox run unit tests
-#       run: |
-#         if [[ ${{ matrix.python }} != "pypy2" ]] && [[ ${{ matrix.python }} != "2.7" ]]; then
-#           tox -e py -- -m unit -n auto
-#         else 
-#           echo ${{ matrix.python }} is excluded from tests due to incompatibility with shlex module
-#         fi
-#       working-directory: 'applications/pip-repository/'
-#       shell: bash
+    - name: Tox run unit tests
+      run: |
+        if [[ ${{ matrix.python }} != "pypy2" ]] && [[ ${{ matrix.python }} != "2.7" ]]; then
+          tox -e py -- -m unit -n auto
+        else 
+          echo ${{ matrix.python }} is excluded from tests due to incompatibility with shlex module
+        fi
+      working-directory: 'applications/pip-repository/'
+      shell: bash
 
-#   # - task: PowerShell@2
-#   #   displayName: Test PyInstaller and PyLauncher
-#   #   inputs:
-#   #     TargetType: filePath
-#   #     filePath: '$(build.sourcesdirectory)/src/python/python-default/run_test_script.ps1'
-#   #     arguments: '-Version ${{ matrix.python }} -SourcesDirectory $(build.sourcesdirectory) -Arch "${{ parameters.pythonArch }}"'
+    - name: Test PyInstaller and PyLauncher
+      run: |
+        applications/python-default/run_test_script.ps1 -Version ${{ matrix.python }} -SourcesDirectory "./"
+      working-directory: 'applications/pip-repository/'
+      shell: pwsh
+
+  WIN:
+    name: windows-latest ${{ matrix.python }}
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # python: [2.7.17, 2.7.18, 3.5.3, 3.5.4, 3.6.6, 3.6.8, 3.7.4, 3.7.6, 3.8.1, 3.8.2]
+        python: [2.7.17, 3.5.4, 3.6.8, 3.7.6, 3.8.2]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: setup default python 
+      uses: ./
+      with:
+        python-version: ${{ matrix.python }}
+
+    - name: Install Tox
+      run: pip install --upgrade setuptools tox
+      shell: bash
+
+    - name: Tox run unit tests
+      run: |
+        if [[ ${{ matrix.python }} != "pypy2" ]] && [[ ${{ matrix.python }} != "2.7" ]]; then
+          tox -e py -- -m unit -n auto
+        else 
+          echo ${{ matrix.python }} is excluded from tests due to incompatibility with shlex module
+        fi
+      working-directory: 'applications/pip-repository/'
+      shell: bash
+
+    - name: Test PyInstaller and PyLauncher
+      run: |
+        applications/python-default/run_test_script.ps1 -Version ${{ matrix.python }} -SourcesDirectory "./"
+      working-directory: 'applications/pip-repository/'
+      shell: pwsh
