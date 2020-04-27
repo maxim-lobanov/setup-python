@@ -1141,7 +1141,7 @@ const MANIFEST_REPO_OWNER = 'actions';
 const MANIFEST_REPO_NAME = 'python-versions';
 exports.MANIFEST_URL = `https://raw.githubusercontent.com/${MANIFEST_REPO_OWNER}/${MANIFEST_REPO_NAME}/master/versions-manifest.json`;
 const IS_WINDOWS = process.platform === 'win32';
-const IS_LINUX = process.platform === 'linux';
+const IS_MACOS = process.platform === 'darwin';
 function findReleaseFromManifest(semanticVersionSpec, architecture) {
     return __awaiter(this, void 0, void 0, function* () {
         const manifest = yield tc.getManifestFromRepo(MANIFEST_REPO_OWNER, MANIFEST_REPO_NAME, AUTH_TOKEN);
@@ -1163,11 +1163,11 @@ function _installPython(workingDirectory) {
         if (IS_WINDOWS) {
             yield exec.exec('powershell', ['./setup.ps1'], options);
         }
-        else if (IS_LINUX) {
-            yield exec.exec('sudo', ['-n', 'bash', './setup.sh'], options);
+        else if (IS_MACOS) {
+            yield exec.exec('bash', ['./setup.sh'], options);
         }
         else {
-            yield exec.exec('bash', ['./setup.sh'], options);
+            yield exec.exec('sudo', ['-n', 'bash', './setup.sh'], options);
         }
     });
 }
@@ -1187,7 +1187,7 @@ function installCpythonFromRelease(release) {
             pythonExtractedFolder = yield tc.extractTar(pythonPath, `./${fileName}`);
         }
         core.info('Execute installation script');
-        _installPython(pythonExtractedFolder);
+        yield _installPython(pythonExtractedFolder);
     });
 }
 exports.installCpythonFromRelease = installCpythonFromRelease;

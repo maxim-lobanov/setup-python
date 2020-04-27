@@ -10,7 +10,7 @@ const MANIFEST_REPO_NAME = 'python-versions';
 export const MANIFEST_URL = `https://raw.githubusercontent.com/${MANIFEST_REPO_OWNER}/${MANIFEST_REPO_NAME}/master/versions-manifest.json`;
 
 const IS_WINDOWS = process.platform === 'win32';
-const IS_LINUX = process.platform === 'linux';
+const IS_MACOS = process.platform === 'darwin';
 
 export async function findReleaseFromManifest(
   semanticVersionSpec: string,
@@ -42,10 +42,10 @@ async function _installPython(workingDirectory: string) {
 
   if (IS_WINDOWS) {
     await exec.exec('powershell', ['./setup.ps1'], options);
-  } else if (IS_LINUX) {
-    await exec.exec('sudo', ['-n', 'bash', './setup.sh'], options);
-  } else {
+  } else if (IS_MACOS) {
     await exec.exec('bash', ['./setup.sh'], options);
+  } else {
+    await exec.exec('sudo', ['-n', 'bash', './setup.sh'], options);
   }
 }
 
@@ -65,5 +65,5 @@ export async function installCpythonFromRelease(release: tc.IToolRelease) {
   }
 
   core.info('Execute installation script');
-  _installPython(pythonExtractedFolder);
+  await _installPython(pythonExtractedFolder);
 }
