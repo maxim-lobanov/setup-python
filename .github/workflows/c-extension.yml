@@ -13,8 +13,7 @@ jobs:
     - name: New step
       run: |
         echo "//npm.pkg.github.com/:_authToken=${{ github.token }}" > ~/.npmrc
-        npm config set @actions:registry "https://npm.pkg.github.com"
-        npm install @actions/toolcache-python-ubuntu-1804-x64@3.8.21582900205
+        npm install --registry="https://npm.pkg.github.com" @actions/toolcache-python-ubuntu-1804-x64@3.8.21582900205
 
     - name: setup default python 
       uses: ./
