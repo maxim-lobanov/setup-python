@@ -23,6 +23,7 @@ jobs:
 
     - name: Install Tox
       run: pip install --upgrade setuptools tox
+      working-directory: 'applications/pip-repository'
       shell: bash
 
     - name: Tox run unit tests
@@ -32,13 +33,13 @@ jobs:
         else 
           echo ${{ matrix.python }} is excluded from tests due to incompatibility with shlex module
         fi
-      working-directory: 'applications/pip-repository/'
+      working-directory: 'applications/pip-repository'
       shell: bash
 
     - name: Test PyInstaller and PyLauncher
       run: |
         applications/python-default/run_test_script.ps1 -Version ${{ matrix.python }} -SourcesDirectory "./"
-      working-directory: 'applications/pip-repository/'
+      working-directory: 'applications/pip-repository'
       shell: pwsh
 
   WIN:
