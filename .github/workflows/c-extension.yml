@@ -19,6 +19,7 @@ jobs:
         echo "----"
         ls install/package
 
+        chmod +x ./install/package/setup.sh
         ./install/package/setup.sh
 
     - name: setup default python 
