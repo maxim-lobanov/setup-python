@@ -45,7 +45,7 @@ async function installPython(workingDirectory: string) {
   } else if (IS_MACOS) {
     await exec.exec('bash', ['./setup.sh'], options);
   } else {
-    await exec.exec('sudo', ['-n', 'bash', './setup.sh'], options);
+    await exec.exec('bash', ['./setup.sh'], options);
   }
 }
 

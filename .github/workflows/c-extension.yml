@@ -23,6 +23,12 @@ jobs:
         chmod +x ./setup.sh
         ./setup.sh
 
+    - name: Debug
+      run: |
+        python --version
+        which python
+        ls /opt/hostedtoolcache/Python
+
     - name: setup default python 
       uses: ./
       with:
