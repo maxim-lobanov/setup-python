@@ -17,6 +17,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: clean up
+      run: sudo rm -rf /opt/hostedtoolcache/Python
+
     - name: setup default python 
       uses: ./
       with:
