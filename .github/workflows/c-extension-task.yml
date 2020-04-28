@@ -1,4 +1,4 @@
-name: C-extension
+name: C-extension-task
 on: 
   push:
 
