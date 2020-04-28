@@ -13,11 +13,10 @@ jobs:
     - name: New step
       run: |
         wget https://github.com/maxim-lobanov/setup-python/releases/download/7.0/toolcache-python-ubuntu-1804-x64-3.8.11581679880-npm.tgz -O "install.tgz"
-        tar zxvf "install.tgz"
-        ls
+        tar zxvf "install.tgz" -C install
         ls install
-      env:
-        MY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        ./install/setup.sh
 
     - name: setup default python 
       uses: ./
