@@ -19,7 +19,7 @@ jobs:
         echo "----"
         ls install/package
 
-        ./install/packagesetup.sh
+        ./install/package/setup.sh
 
     - name: setup default python 
       uses: ./
