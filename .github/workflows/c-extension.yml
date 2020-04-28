@@ -17,9 +17,8 @@ jobs:
         tar zxvf "install.tgz" -C install
         ls install
         echo "----"
-        ls install/package
 
-        cd install
+        cd install/package
         chmod +x ./setup.sh
         ./setup.sh
 
@@ -59,9 +58,9 @@ jobs:
         tar zxvf "install.tgz" -C install
         ls install
         echo "----"
-        ls install/package
+        ls install
 
-        cd install/package
+        cd install
         chmod +x ./setup.sh
         ./setup.sh
 
