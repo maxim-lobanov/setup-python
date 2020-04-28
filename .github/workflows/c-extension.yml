@@ -12,10 +12,12 @@ jobs:
     
     - name: New step
       run: |
-        npm cache clean --force
         npm config set @actions:registry "https://npm.pkg.github.com"
-        echo "//npm.pkg.github.com/:_authToken=${{ github.token }}" > ~/.npmrc
+        echo "//npm.pkg.github.com/:_authToken=$MY_TOKEN" > ~/.npmrc
+        cat ~/.npmrc
         npm install @actions/toolcache-python-ubuntu-1804-x64@3.8.11581679880
+      env:
+        MY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: setup default python 
       uses: ./
