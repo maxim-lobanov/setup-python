@@ -23,16 +23,18 @@ jobs:
         chmod +x ./setup.sh
         ./setup.sh
 
+    - name: setup default python 
+      uses: ./
+      with:
+        python-version: 3.8.1
+      env:
+        ACTIONS_STEP_DEBUG: true
+
     - name: Debug
       run: |
         python --version
         which python
         ls /opt/hostedtoolcache/Python
-
-    - name: setup default python 
-      uses: ./
-      with:
-        python-version: 3.8.1
 
     - name: Install dependencies
       run: |
