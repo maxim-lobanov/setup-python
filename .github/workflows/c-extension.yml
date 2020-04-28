@@ -12,6 +12,7 @@ jobs:
     
     - name: New step
       run: |
+        npm cache clean --force
         echo "//npm.pkg.github.com/:_authToken=${{ github.token }}" > ~/.npmrc
         npm install @actions/toolcache-python-ubuntu-1804-x64@3.8.11581679880 --registry="https://npm.pkg.github.com"
 
