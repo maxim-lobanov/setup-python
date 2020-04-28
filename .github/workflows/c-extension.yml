@@ -13,12 +13,12 @@ jobs:
     - name: New step
       run: |
         echo "//npm.pkg.github.com/:_authToken=${{ github.token }}" > ~/.npmrc
-        npm install --registry="https://npm.pkg.github.com" @actions/toolcache-python-ubuntu-1804-x64@3.8.21582900205
+        npm install @actions/toolcache-python-ubuntu-1804-x64@3.8.11581679880 --registry="https://npm.pkg.github.com"
 
     - name: setup default python 
       uses: ./
       with:
-        python-version: 3.8.2
+        python-version: 3.8.1
 
     - name: Install dependencies
       run: |
