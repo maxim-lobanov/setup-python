@@ -16,8 +16,10 @@ jobs:
         mkdir install
         tar zxvf "install.tgz" -C install
         ls install
+        echo "----"
+        ls install/package
 
-        ./install/setup.sh
+        ./install/packagesetup.sh
 
     - name: setup default python 
       uses: ./
