@@ -122,15 +122,15 @@ jobs:
     - name: setup default python 
       uses: ./
       with:
-        python-version: 3.6.10
+        python-version: 3.5.4
 
     - name: Debug
       run: |
         python --version
         which python
-        ls -lah /opt/hostedtoolcache/Python/3.6.10/x64
+        ls -lah /opt/hostedtoolcache/Python/3.5.4/x64
 
-        ls -lah /opt/hostedtoolcache/Python/3.6.10/x64/bin
+        ls -lah /opt/hostedtoolcache/Python/3.5.4/x64/bin
 
     - name: Install dependencies
       run: |
