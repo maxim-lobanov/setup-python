@@ -19,7 +19,7 @@ jobs:
         echo "----"
         ls install/package
 
-        cd install/package
+        cd install
         chmod +x ./setup.sh
         ./setup.sh
 
