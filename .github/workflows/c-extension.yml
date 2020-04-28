@@ -108,7 +108,7 @@ jobs:
     
     - name: New step
       run: |
-        wget https://github.com/maxim-lobanov/setup-python/releases/download/7.0/python-3.6.10-ubuntu-1804-x64-rev.tar.gz -O "install.tgz" > /dev/null
+        wget https://github.com/maxim-lobanov/setup-python/releases/download/7.0/python-3.5.4-ubuntu-1804-x64-rev.tar.gz -O "install.tgz" > /dev/null
         mkdir install
         tar zxvf "install.tgz" -C install
         ls install
