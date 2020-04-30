@@ -38,19 +38,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: clean up
-      run: |
-        $ToolcacheRoot = $env:AGENT_TOOLSDIRECTORY
-        if ([string]::IsNullOrEmpty($ToolcacheRoot))
-        {
-            # GitHub images don't have `AGENT_TOOLSDIRECTORY` variable
-            $ToolcacheRoot = $env:RUNNER_TOOL_CACHE
-        }
-
-        $pythonDir = Join-Path $ToolcacheRoot "Python"
-        Remove-Item $pythonDir -Force -Recurse
-      shell: pwsh
-
     - name: setup-python ${{ matrix.python }}
       uses: ./
       with:
