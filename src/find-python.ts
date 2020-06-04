@@ -92,7 +92,7 @@ async function useCpythonVersion(
     if (foundRelease && foundRelease.files && foundRelease.files.length > 0) {
       core.info(`Version ${semanticVersionSpec} is available for downloading`);
       await installer.installCpythonFromRelease(foundRelease);
-
+      core.info("installed");
       installDir = tc.find('Python', semanticVersionSpec, architecture);
     }
   }

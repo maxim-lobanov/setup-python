@@ -60,3 +60,7 @@ cd $PYTHON_TOOLCACHE_VERSION_ARCH_PATH
 echo "Create complete file"
 touch $PYTHON_TOOLCACHE_VERSION_PATH/x64.complete
 
+ls -la $PYTHON_TOOLCACHE_VERSION_PATH
+
+
+printenv | sort
