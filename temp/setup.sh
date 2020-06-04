@@ -16,13 +16,9 @@ else
     TOOLCACHE_ROOT=$AGENT_TOOLSDIRECTORY
 fi
 
-echo "TOOLCACHE_ROOT = $TOOLCACHE_ROOT"
-
 PYTHON_TOOLCACHE_PATH=$TOOLCACHE_ROOT/Python
 PYTHON_TOOLCACHE_VERSION_PATH=$PYTHON_TOOLCACHE_PATH/$PYTHON_FULL_VERSION
 PYTHON_TOOLCACHE_VERSION_ARCH_PATH=$PYTHON_TOOLCACHE_VERSION_PATH/x64
-
-echo "PYTHON_TOOLCACHE_VERSION_ARCH_PATH = $PYTHON_TOOLCACHE_VERSION_ARCH_PATH"
 
 echo "Check if Python hostedtoolcache folder exist..."
 if [ ! -d $PYTHON_TOOLCACHE_PATH ]; then
@@ -54,12 +50,9 @@ fi
 chmod +x ../python $PYTHON_MAJOR $PYTHON_MAJOR_DOT_MINOR $PYTHON_MAJORMINOR python
 
 echo "Upgrading PIP..."
-./python -m ensurepip || true
-#./python -m pip install --ignore-installed pip
+./python -m ensurepip
+./python -m pip install --ignore-installed pip
 
 echo "Create complete file"
 touch $PYTHON_TOOLCACHE_VERSION_PATH/x64.complete
 
-ls -la $PYTHON_TOOLCACHE_VERSION_PATH
-
-printenv | sort
