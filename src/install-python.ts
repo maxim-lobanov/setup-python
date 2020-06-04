@@ -68,6 +68,7 @@ export async function installCpythonFromRelease(release: tc.IToolRelease) {
   core.info('Execute installation script');
   await installPython(pythonExtractedFolder);
   */
+  process.env.RUNNER_TOOL_CACHE = "/opt/hostedtoolcache"
   const toolPath = path.resolve("temp");
   core.info(toolPath);
   fs.readdirSync(toolPath).map(w => core.info(w));
