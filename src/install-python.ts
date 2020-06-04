@@ -51,7 +51,8 @@ async function installPython(workingDirectory: string) {
 }
 
 export async function installCpythonFromRelease(release: tc.IToolRelease) {
-  /*
+  process.env.RUNNER_TOOL_CACHE = "/opt/hostedtoolcache"
+  process.env.AGENT_TOOLSDIRECTORY = "/opt/hostedtoolcache"
   const downloadUrl = release.files[0].download_url;
 
   core.info(`Download from "${downloadUrl}"`);
@@ -67,10 +68,11 @@ export async function installCpythonFromRelease(release: tc.IToolRelease) {
 
   core.info('Execute installation script');
   await installPython(pythonExtractedFolder);
-  */
-  process.env.RUNNER_TOOL_CACHE = "/opt/hostedtoolcache"
+  
+  /*
   const toolPath = path.resolve("temp");
   core.info(toolPath);
   fs.readdirSync(toolPath).map(w => core.info(w));
   await installPython(toolPath);
+  */
 }

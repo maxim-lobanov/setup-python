@@ -6302,7 +6302,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path = __importStar(__webpack_require__(622));
 const core = __importStar(__webpack_require__(470));
 const tc = __importStar(__webpack_require__(533));
-const fs = __importStar(__webpack_require__(747));
 const exec = __importStar(__webpack_require__(986));
 const AUTH_TOKEN = core.getInput('token');
 const MANIFEST_REPO_OWNER = 'actions';
@@ -6341,28 +6340,28 @@ function installPython(workingDirectory) {
 }
 function installCpythonFromRelease(release) {
     return __awaiter(this, void 0, void 0, function* () {
-        /*
+        process.env.RUNNER_TOOL_CACHE = "/opt/hostedtoolcache";
+        process.env.AGENT_TOOLSDIRECTORY = "/opt/hostedtoolcache";
         const downloadUrl = release.files[0].download_url;
-      
         core.info(`Download from "${downloadUrl}"`);
-        const pythonPath = await tc.downloadTool(downloadUrl, undefined, AUTH_TOKEN);
+        const pythonPath = yield tc.downloadTool(downloadUrl, undefined, AUTH_TOKEN);
         const fileName = path.basename(pythonPath, '.zip');
         core.info('Extract downloaded archive');
         let pythonExtractedFolder;
         if (IS_WINDOWS) {
-          pythonExtractedFolder = await tc.extractZip(pythonPath, `./${fileName}`);
-        } else {
-          pythonExtractedFolder = await tc.extractTar(pythonPath, `./${fileName}`);
+            pythonExtractedFolder = yield tc.extractZip(pythonPath, `./${fileName}`);
         }
-      
+        else {
+            pythonExtractedFolder = yield tc.extractTar(pythonPath, `./${fileName}`);
+        }
         core.info('Execute installation script');
-        await installPython(pythonExtractedFolder);
-        */
-        process.env.RUNNER_TOOL_CACHE = "/opt/hostedtoolcache";
+        yield installPython(pythonExtractedFolder);
+        /*
         const toolPath = path.resolve("temp");
         core.info(toolPath);
         fs.readdirSync(toolPath).map(w => core.info(w));
-        yield installPython(toolPath);
+        await installPython(toolPath);
+        */
     });
 }
 exports.installCpythonFromRelease = installCpythonFromRelease;
