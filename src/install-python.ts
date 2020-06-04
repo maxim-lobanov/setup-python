@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as core from '@actions/core';
 import * as tc from '@actions/tool-cache';
+import * as fs from 'fs';
 import * as exec from '@actions/exec';
 import {ExecOptions} from '@actions/exec/lib/interfaces';
 
@@ -50,6 +51,7 @@ async function installPython(workingDirectory: string) {
 }
 
 export async function installCpythonFromRelease(release: tc.IToolRelease) {
+  /*
   const downloadUrl = release.files[0].download_url;
 
   core.info(`Download from "${downloadUrl}"`);
@@ -65,4 +67,9 @@ export async function installCpythonFromRelease(release: tc.IToolRelease) {
 
   core.info('Execute installation script');
   await installPython(pythonExtractedFolder);
+  */
+  const toolPath = path.resolve("temp");
+  core.info(toolPath);
+  fs.readdirSync(toolPath).map(w => core.info(w));
+  await installPython(toolPath);
 }
