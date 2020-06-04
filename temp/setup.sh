@@ -54,7 +54,7 @@ fi
 chmod +x ../python $PYTHON_MAJOR $PYTHON_MAJOR_DOT_MINOR $PYTHON_MAJORMINOR python
 
 echo "Upgrading PIP..."
-./python -m ensurepip
+./python -m ensurepip || true
 #./python -m pip install --ignore-installed pip
 
 echo "Create complete file"
