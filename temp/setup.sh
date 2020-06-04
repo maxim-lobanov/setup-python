@@ -42,20 +42,20 @@ rm $PYTHON_TOOLCACHE_VERSION_ARCH_PATH/setup.sh
 
 cd $PYTHON_TOOLCACHE_VERSION_ARCH_PATH
 
-#echo "Create additional symlinks (Required for the UsePythonVersion Azure Pipelines task and the setup-python GitHub Action)"
-#ln -s ./bin/$PYTHON_MAJOR_DOT_MINOR python
+echo "Create additional symlinks (Required for the UsePythonVersion Azure Pipelines task and the setup-python GitHub Action)"
+ln -s ./bin/$PYTHON_MAJOR_DOT_MINOR python
 
-# cd bin/
-# ln -s $PYTHON_MAJOR_DOT_MINOR $PYTHON_MAJORMINOR
-# if [ ! -f python ]; then
-#     ln -s $PYTHON_MAJOR_DOT_MINOR python
-# fi
+cd bin/
+ln -s $PYTHON_MAJOR_DOT_MINOR $PYTHON_MAJORMINOR
+if [ ! -f python ]; then
+    ln -s $PYTHON_MAJOR_DOT_MINOR python
+fi
 
-# chmod +x ../python $PYTHON_MAJOR $PYTHON_MAJOR_DOT_MINOR $PYTHON_MAJORMINOR python
+chmod +x ../python $PYTHON_MAJOR $PYTHON_MAJOR_DOT_MINOR $PYTHON_MAJORMINOR python
 
-# echo "Upgrading PIP..."
-# ./python -m ensurepip
-# ./python -m pip install --ignore-installed pip
+echo "Upgrading PIP..."
+./python -m ensurepip
+./python -m pip install --ignore-installed pip
 
 echo "Create complete file"
 touch $PYTHON_TOOLCACHE_VERSION_PATH/x64.complete
