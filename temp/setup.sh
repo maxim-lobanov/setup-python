@@ -57,6 +57,6 @@ cd $PYTHON_TOOLCACHE_VERSION_ARCH_PATH
 # ./python -m ensurepip
 # ./python -m pip install --ignore-installed pip
 
-# echo "Create complete file"
-# touch $PYTHON_TOOLCACHE_VERSION_PATH/x64.complete
+echo "Create complete file"
+touch $PYTHON_TOOLCACHE_VERSION_PATH/x64.complete
 
