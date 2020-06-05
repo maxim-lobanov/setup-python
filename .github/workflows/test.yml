@@ -30,6 +30,26 @@ jobs:
     - name: Run simple python code
       run: python -c 'import math; print(math.factorial(5))'
 
+  default-version2:
+    name: Setup default version
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04] 
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: setup default python 
+      uses: ./
+
+    - name: Validate version
+      run: python --version
+
+    - name: Run simple python code
+      run: python -c 'import math; print(math.factorial(5))'
+
   setup-versions-from-manifest: 
     name: Setup ${{ matrix.python }} ${{ matrix.os }}
     runs-on: ${{ matrix.os }} 
@@ -43,6 +63,31 @@ jobs:
     - run: echo '::set-env name=RUNNER_TOOL_CACHE::/opt/hostedtoolcache'
     - run: echo '::set-env name=AGENT_TOOLSDIRECTORY::/opt/hostedtoolcache'
     - run: mkdir -p $RUNNER_TOOL_CACHE
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: setup-python ${{ matrix.python }}
+      uses: ./
+      with:
+        python-version: ${{ matrix.python }}
+
+    - name: Validate version
+      run: |
+        python --version
+      shell: pwsh
+
+    - name: Run simple code
+      run: python -c 'import math; print(math.factorial(5))'
+
+  setup-versions-from-manifest2: 
+    name: Setup ${{ matrix.python }} ${{ matrix.os }}
+    runs-on: ${{ matrix.os }} 
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-16.04, ubuntu-18.04]
+        python: [2.7.17, 2.7.18, 3.5.4, 3.5.9, 3.6.7, 3.6.8, 3.6.9, 3.6.10, 3.7.5, 3.7.6, 3.7.7, 3.8.0, 3.8.1, 3.8.2]
+    steps:
     - name: Checkout
       uses: actions/checkout@v2
 
