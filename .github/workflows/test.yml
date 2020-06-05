@@ -29,7 +29,7 @@ jobs:
     - name: Run simple python code
       run: python -c 'import math; print(math.factorial(5))'
 
-  setup-versions-from-manifest:
+  setup-versions-from-manifest: 
     name: Setup ${{ matrix.python }} ${{ matrix.os }}
     runs-on: ${{ matrix.os }} 
     strategy:
