@@ -31,7 +31,7 @@ jobs:
 
   setup-versions-from-manifest:
     name: Setup ${{ matrix.python }} ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }} 
     strategy:
       fail-fast: false
       matrix:
