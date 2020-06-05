@@ -6302,6 +6302,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path = __importStar(__webpack_require__(622));
 const core = __importStar(__webpack_require__(470));
 const tc = __importStar(__webpack_require__(533));
+const os = __importStar(__webpack_require__(87));
 const exec = __importStar(__webpack_require__(986));
 const AUTH_TOKEN = core.getInput('token');
 const MANIFEST_REPO_OWNER = 'actions';
@@ -6340,8 +6341,10 @@ function installPython(workingDirectory) {
 }
 function installCpythonFromRelease(release) {
     return __awaiter(this, void 0, void 0, function* () {
-        process.env.RUNNER_TOOL_CACHE = "/opt/hostedtoolcache";
-        process.env.AGENT_TOOLSDIRECTORY = "/opt/hostedtoolcache";
+        if (os.platform() === "linux") {
+            process.env.RUNNER_TOOL_CACHE = "/opt/hostedtoolcache";
+            process.env.AGENT_TOOLSDIRECTORY = "/opt/hostedtoolcache";
+        }
         const downloadUrl = release.files[0].download_url;
         core.info(`Download from "${downloadUrl}"`);
         const pythonPath = yield tc.downloadTool(downloadUrl, undefined, AUTH_TOKEN);

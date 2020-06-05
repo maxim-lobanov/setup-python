@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as core from '@actions/core';
 import * as tc from '@actions/tool-cache';
 import * as fs from 'fs';
+import * as os from 'os';
 import * as exec from '@actions/exec';
 import {ExecOptions} from '@actions/exec/lib/interfaces';
 
@@ -51,8 +52,11 @@ async function installPython(workingDirectory: string) {
 }
 
 export async function installCpythonFromRelease(release: tc.IToolRelease) {
-  process.env.RUNNER_TOOL_CACHE = "/opt/hostedtoolcache"
-  process.env.AGENT_TOOLSDIRECTORY = "/opt/hostedtoolcache"
+  if (os.platform() === "linux") {
+    process.env.RUNNER_TOOL_CACHE = "/opt/hostedtoolcache"
+    process.env.AGENT_TOOLSDIRECTORY = "/opt/hostedtoolcache"
+  }
+  
   const downloadUrl = release.files[0].download_url;
 
   core.info(`Download from "${downloadUrl}"`);
