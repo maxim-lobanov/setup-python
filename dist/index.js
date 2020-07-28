@@ -3486,7 +3486,7 @@ function findAllVersions(toolName, arch) {
     return versions;
 }
 exports.findAllVersions = findAllVersions;
-function getManifestFromRepo(owner, repo, auth, branch = 'master') {
+function getManifestFromRepo(owner, repo, auth, branch = 'main') {
     return __awaiter(this, void 0, void 0, function* () {
         let releases = [];
         const treeUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}`;
@@ -3508,6 +3508,7 @@ function getManifestFromRepo(owner, repo, auth, branch = 'master') {
             }
         }
         headers['accept'] = 'application/vnd.github.VERSION.raw';
+        core.info(manifestUrl);
         let versionsRaw = yield (yield http.get(manifestUrl, headers)).readBody();
         if (versionsRaw) {
             // shouldn't be needed but protects against invalid json saved with BOM
