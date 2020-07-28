@@ -1002,6 +1002,8 @@ function _findMatch(versionSpec, stable, candidates, archFilter) {
             if (semver.satisfies(version, versionSpec) &&
                 (!stable || candidate.stable === stable)) {
                 core_1.info(`candidates ${candidate.files} - ${candidate.files.length}`);
+                core_1.info(Array.isArray(candidate.files))
+                core_1.info(JSON.stringify(candidate.files))
                 file = candidate.files.find(item => {
                     core_1.info(`${item.arch}===${archFilter} && ${item.platform}===${platFilter}`);
                     let chk = item.arch === archFilter && item.platform === platFilter;
